@@ -5,8 +5,10 @@
     "target": "es6",
     "noImplicitAny": true,
     "moduleResolution": "node",
+    "lib": ["es5", "es6", "dom"],
     "sourceMap": true,
     "outDir": "dist",
+    "rootDir": "src",
     "baseUrl": ".",
     "paths": {
       "*": ["node_modules/*"]
