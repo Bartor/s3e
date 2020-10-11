@@ -12,9 +12,6 @@ varying vec3 v_normal;
 
 void main() {
     gl_Position = u_projection * u_worldView * a_position;
-    gl_PointSize = 5.0;
-
-    v_fogDepth = -(u_worldView * a_position).z;
     v_normal = a_normal;
 }
 `;

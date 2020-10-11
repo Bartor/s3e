@@ -1,12 +1,21 @@
-export interface ParameterDescriptor<T> {
+export interface ParameterDescriptor {
   name: string;
   type: string;
-  location?: T;
+}
+
+export interface CompiledParameterDescriptor<T> extends ParameterDescriptor {
+  location: T;
 }
 
 export interface ShaderInfo {
   shader: WebGLShader;
   shaderType: any;
-  attributes: ParameterDescriptor<number>[];
-  uniforms: ParameterDescriptor<WebGLUniformLocation>[];
+  attributes: ParameterDescriptor[];
+  uniforms: ParameterDescriptor[];
+}
+
+export interface ProgramInfo {
+  program: WebGLProgram;
+  attributes: CompiledParameterDescriptor<number>[];
+  uniforms: CompiledParameterDescriptor<WebGLUniformLocation>[];
 }
