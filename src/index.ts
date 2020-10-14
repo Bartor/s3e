@@ -10,6 +10,12 @@ const fragment = getFragmentShader(gl);
 const vertex = getVertexShader(gl);
 const program = createProgram(gl, vertex, fragment);
 
+gl.useProgram(program.program);
+
 const bindingsManager = new BindingsManager(program, gl);
+
+bindingsManager.updateValues({
+  uniforms: [["u_projection", new Float32Array(16)]],
+});
 
 console.log(bindingsManager);

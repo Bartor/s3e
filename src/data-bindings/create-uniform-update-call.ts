@@ -22,11 +22,10 @@ const createUniformUpdateCall = (
   if (mapping === undefined)
     throw new Error(`Cannot create a binding call for ${signature.type} type`);
 
-  const fn = gl[mapping.functionName];
-
   return mapping.matrixType
-    ? (newValue, inverse = false) => fn(signature.location, inverse, newValue)
-    : (newValue) => fn(signature.location, newValue);
+    ? (newValue, inverse = false) =>
+        gl[mapping.functionName](signature.location, inverse, newValue)
+    : (newValue) => gl[mapping.functionName](signature.location, newValue);
 };
 
 export default createUniformUpdateCall;

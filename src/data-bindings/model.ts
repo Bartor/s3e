@@ -14,3 +14,5 @@ export type DataBindingsValueUpdate = {
   attributes?: DataBindingValue[];
   uniforms?: DataBindingValue[];
 };
+
+export type Binded = [name: string, type: string];
