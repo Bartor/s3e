@@ -12,19 +12,22 @@ const typeMappings: Record<string, { size: number }> = {
 
 const createAttributeUpdateCall = (
   signature: DataSignature,
-  gl: WebGLRenderingContext
+  gl: WebGLRenderingContext,
+  customSize?: number
 ): DataUpdateCall<WebGLBuffer> => {
   const mapping = typeMappings[signature.type];
 
   if (mapping === undefined)
     throw new Error(`Cannot create a binding call for ${signature.type} type`);
 
+  const size = customSize ?? mapping.size;
+
   return (newValue) => {
     gl.enableVertexAttribArray(signature.location as number);
     gl.bindBuffer(gl.ARRAY_BUFFER, newValue);
     gl.vertexAttribPointer(
       signature.location as number,
-      mapping.size,
+      size,
       gl.FLOAT,
       false,
       0,
