@@ -1,4 +1,5 @@
 import { ProgramInfo, ShaderInfo } from "./model";
+
 const createProgram = (
   gl: WebGLRenderingContext,
   vertexShader: ShaderInfo,
@@ -33,4 +34,4 @@ const createProgram = (
   }
 };
 
-export default createProgram;
+export { createProgram };

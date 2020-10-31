@@ -13,7 +13,10 @@ const typeMappings: Record<string, { size: number }> = {
 const createAttributeUpdateCall = (
   signature: DataSignature,
   gl: WebGLRenderingContext,
-  customSize?: number
+  customSize?: number,
+  normalize = false,
+  stride = 0,
+  offset = 0
 ): DataUpdateCall<WebGLBuffer> => {
   const mapping = typeMappings[signature.type];
 
@@ -29,11 +32,11 @@ const createAttributeUpdateCall = (
       signature.location as number,
       size,
       gl.FLOAT,
-      false,
-      0,
-      0
+      normalize,
+      stride,
+      offset
     );
   };
 };
 
-export default createAttributeUpdateCall;
+export { createAttributeUpdateCall };

@@ -25,4 +25,4 @@ abstract class StaticObject implements Object3d {
   }
 }
 
-export default StaticObject;
+export { StaticObject };

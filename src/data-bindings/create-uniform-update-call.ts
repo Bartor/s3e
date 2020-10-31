@@ -28,4 +28,4 @@ const createUniformUpdateCall = (
     : (newValue) => gl[mapping.functionName](signature.location, newValue);
 };
 
-export default createUniformUpdateCall;
+export { createUniformUpdateCall };

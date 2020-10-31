@@ -1,4 +1,4 @@
-import compileShader from "../compile-shader";
+import { compileShader } from "../compile-shader";
 
 const shaderProgram = `
 attribute vec4 a_position;
@@ -19,4 +19,4 @@ void main() {
 const getVertexShader = (gl: WebGLRenderingContext) =>
   compileShader(gl, gl.VERTEX_SHADER, shaderProgram);
 
-export default getVertexShader;
+export { getVertexShader };

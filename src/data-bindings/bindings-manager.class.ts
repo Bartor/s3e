@@ -1,7 +1,7 @@
 import { Binded, DataBindingsValueUpdate, DataUpdateCall } from "./model";
 import { ProgramInfo } from "./../shaders/model";
-import createUniformUpdateCall from "./create-uniform-update-call";
-import createAttributeUpdateCall from "./create-attribute-binding-call";
+import { createUniformUpdateCall } from "./create-uniform-update-call";
+import { createAttributeUpdateCall } from "./create-attribute-binding-call";
 
 class BindingsManager {
   private bindings: Record<
@@ -12,7 +12,7 @@ class BindingsManager {
     }
   > = {};
 
-  constructor(program: ProgramInfo, gl: WebGLRenderingContext) {
+  constructor(gl: WebGLRenderingContext, program: ProgramInfo) {
     program.uniforms.forEach(
       ({ name, location, type }) =>
         (this.bindings[name] = {
@@ -64,4 +64,4 @@ class BindingsManager {
   }
 }
 
-export default BindingsManager;
+export { BindingsManager };

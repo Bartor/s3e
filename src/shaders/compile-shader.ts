@@ -1,5 +1,5 @@
 import { ShaderInfo } from "./model";
-import parseShader from "./parse-shader";
+import { parseShader } from "./parse-shader";
 
 const compileShader = (
   gl: WebGLRenderingContext,
@@ -25,4 +25,4 @@ const compileShader = (
   }
 };
 
-export default compileShader;
+export { compileShader };

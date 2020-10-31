@@ -1,4 +1,4 @@
-import compileShader from "../compile-shader";
+import { compileShader } from "../compile-shader";
 
 const shaderProgram = `
 precision mediump float;
@@ -13,4 +13,4 @@ void main() {
 const getFragmentShader = (gl: WebGLRenderingContext) =>
   compileShader(gl, gl.FRAGMENT_SHADER, shaderProgram);
 
-export default getFragmentShader;
+export { getFragmentShader };

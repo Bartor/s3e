@@ -26,4 +26,4 @@ const parseShader = (source: string) => {
   return { attributes, uniforms };
 };
 
-export default parseShader;
+export { parseShader };
