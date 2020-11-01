@@ -1,12 +1,11 @@
 import { invert, multiply, perspective } from "./../3d/matrix-operations";
 import { CameraSettings } from "./model";
 import { Mat4 } from "./../3d/model";
-import { ChangeableObject } from "./abstracts/changeable-object.abstract.class";
+import { Object3d } from "./object3d.class";
 
-class Camera extends ChangeableObject {
+class Camera extends Object3d {
   private viewMatrix: Mat4 = new Float32Array(16);
-  private viewProjectionMatrix: Mat4 = new Float32Array(16);
-  private projectionMatrix: Mat4;
+  public perspectiveMatrix: Mat4;
 
   constructor(settings: CameraSettings) {
     super();
@@ -20,22 +19,16 @@ class Camera extends ChangeableObject {
     near,
     aspectRatio,
   }: CameraSettings) {
-    this.projectionMatrix = perspective(viewAngle, aspectRatio, near, far);
-    invert(this.selfMatrix, this.viewMatrix);
-    multiply(this.projectionMatrix, this.viewMatrix, this.viewProjectionMatrix);
+    this.perspectiveMatrix = perspective(viewAngle, aspectRatio, near, far);
+    this.changed = true;
   }
 
   public get cameraMatrix() {
     if (this.changed) {
       invert(this.selfMatrix, this.viewMatrix);
-      multiply(
-        this.projectionMatrix,
-        this.viewMatrix,
-        this.viewProjectionMatrix
-      );
     }
 
-    return this.viewProjectionMatrix;
+    return this.viewMatrix;
   }
 }
 

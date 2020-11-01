@@ -7,11 +7,11 @@ attribute vec3 a_normal;
 uniform mat4 u_worldView;
 uniform mat4 u_projection;
 
-varying float v_fogDepth;
 varying vec3 v_normal;
 
 void main() {
-    gl_Position = u_projection * u_worldView * a_position;
+    // gl_Position = u_projection * u_worldView * a_position;
+    gl_Position = u_projection * a_position;
     v_normal = a_normal;
 }
 `;

@@ -1,10 +1,11 @@
-import { PolygonRepresentation } from "./../model";
-import { identity, multiply, scale } from "./../../3d/matrix-operations";
-import { move, rotateX, rotateY, rotateZ } from "../../3d/matrix-operations";
-import { Mat4 } from "../../3d/model";
-import { Position3d, Rotation3d, Scale3d, Object3d } from "../model";
+import { PolygonRepresentation } from "./model";
+import { identity, multiply, scale } from "../3d/matrix-operations";
+import { move, rotateX, rotateY, rotateZ } from "../3d/matrix-operations";
+import { Mat4 } from "../3d/model";
+import { Position3d, Rotation3d, Scale3d } from "./model";
+import { Scene } from "../se3-engine/scene";
 
-abstract class ChangeableObject implements Object3d {
+class Object3d {
   constructor(
     public representation: PolygonRepresentation = {
       pointsPerFace: 0,
@@ -17,11 +18,13 @@ abstract class ChangeableObject implements Object3d {
   private _sca: Scale3d = { x: 1, y: 1, z: 1 };
 
   private _absMat: Mat4 = identity();
+  public selfMatrix: Mat4 = identity();
 
   public changed = false;
 
   public children: Object3d[] = [];
   public parent: Object3d;
+  public scene: Scene;
 
   public updateParent(parent: Object3d) {
     this.parent = parent;
@@ -30,10 +33,18 @@ abstract class ChangeableObject implements Object3d {
 
   public addChild(child: Object3d) {
     child.updateParent(this);
+    this.scene.connectScene(child);
     this.children.push(child);
   }
 
-  public selfMatrix: Mat4 = identity();
+  public removeChild(child: Object3d) {
+    const idx = this.children.indexOf(child);
+
+    if (idx !== -1) {
+      this.scene.disconnectScene(this.children[idx]);
+      this.children.splice(idx, 1);
+    }
+  }
 
   public get absoluteMatrix() {
     if (this.changed) {
@@ -107,14 +118,14 @@ abstract class ChangeableObject implements Object3d {
         },
       },
       y: {
-        get: () => this._pos.y,
+        get: () => this._rot.y,
         set: (value: number) => {
           this._rot.y = value;
           this.changed = true;
         },
       },
       z: {
-        get: () => this._pos.z,
+        get: () => this._rot.z,
         set: (value: number) => {
           this._rot.z = value;
           this.changed = true;
@@ -151,4 +162,4 @@ abstract class ChangeableObject implements Object3d {
   );
 }
 
-export { ChangeableObject };
+export { Object3d };

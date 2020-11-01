@@ -9,9 +9,13 @@ export const getS3eDefaultConfiguration: (
   const vertexShader = getVertexShader(gl);
   const fragmentShader = getFragmentShader(gl);
 
-  const program = createProgram(gl, vertexShader, fragmentShader);
+  const programInfo = createProgram(gl, vertexShader, fragmentShader);
 
   return {
-    program,
+    programInfo,
+    positionsAttribute: "a_position",
+    normalAttribute: "a_normal",
+    worldViewUniform: "u_worldView",
+    projectionUniform: "u_projection",
   };
 };

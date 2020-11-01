@@ -7,7 +7,7 @@ class BindingsManager {
   private bindings: Record<
     string,
     {
-      call: DataUpdateCall<number | Float32Array>;
+      call: DataUpdateCall<number | Float32Array | WebGLBuffer>;
       type: string;
     }
   > = {};

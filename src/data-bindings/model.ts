@@ -8,7 +8,10 @@ export type DataUpdateCall<T> = (newValue: T, inverse?: boolean) => void;
 export type DataBindings<T> = Map<string, DataUpdateCall<T>>;
 
 // Performance Critical
-export type DataBindingValue = [string, number | Float32Array];
+export type DataBindingValue = [
+  name: string,
+  value: number | Float32Array | WebGLBuffer
+];
 
 export type DataBindingsValueUpdate = {
   attributes?: DataBindingValue[];
