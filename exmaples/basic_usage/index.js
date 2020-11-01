@@ -4,17 +4,24 @@ function main() {
   const canvas = document.getElementById("example");
 
   const engine = new S3e(canvas);
-  const cubeObject = new Object3d(createCuboid(10));
+  const cubeObject = new Object3d(createCuboid(20));
 
-  cubeObject.position.z = -50;
+  const cubeChild = new Object3d(createCuboid(10));
+  cubeChild.position.y = 30;
 
+  cubeObject.addChild(cubeChild);
   engine.currentScene.addChild(cubeObject);
+
+  engine.currentCamera.position.z = 100;
 
   function draw(t) {
     requestAnimationFrame(draw);
 
-    cubeObject.rotation.y = t / 1000;
+    cubeObject.rotation.z = t / 1000;
     cubeObject.rotation.x = t / 1000;
+    cubeChild.rotation.y = t / 1000;
+
+    cubeChild.position.y = 30 - 10 * Math.sin(t / 500);
 
     engine.draw();
   }

@@ -1,3 +1,4 @@
+import { Camera } from "../objects/camera";
 import { Object3d } from "../objects/object3d.class";
 import { SceneObject } from "./model";
 
@@ -9,6 +10,8 @@ class Scene extends Object3d {
   }
 
   public connectScene(child: Object3d) {
+    if (this.elements.find((element) => element.object === child)) return;
+
     child.scene = this;
 
     const childBuffer = this.gl.createBuffer();
@@ -19,7 +22,15 @@ class Scene extends Object3d {
       this.gl.STATIC_DRAW
     );
 
-    this.elements.push({ object: child, buffer: childBuffer });
+    this.elements.push({
+      drawable: !(child instanceof Camera),
+      buffer: childBuffer,
+      object: child,
+    });
+
+    for (const childChild of child.children) {
+      this.connectScene(childChild);
+    }
   }
 
   public disconnectScene(child: Object3d) {

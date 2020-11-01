@@ -1,14 +1,22 @@
 import { multiply } from "./../3d/matrix-operations";
-import { DataBindingsValueUpdate } from "./../data-bindings/model";
+import {
+  DataUpdateCall,
+} from "./../data-bindings/model";
 import { BindingsManager } from "../data-bindings/bindings-manager.class";
 import { Camera } from "../objects/camera";
 import { Scene } from "./scene";
 import { getS3eDefaultConfiguration } from "./default-config";
 import { S3eConfiguration } from "./model";
+import { Mat4 } from "../3d/model";
 
 class S3e {
+  private worldViewAllocation = new Float32Array(16);
+
   private config: S3eConfiguration;
   private bindingsManager: BindingsManager;
+
+  private positionUpdateCall: DataUpdateCall<WebGLBuffer>;
+  private worldViewUpdateCall: DataUpdateCall<Mat4>;
 
   public gl: WebGLRenderingContext;
   public currentScene: Scene;
@@ -27,13 +35,24 @@ class S3e {
       this.config.programInfo
     );
 
+    this.positionUpdateCall = this.bindingsManager.bindings[
+      this.config.positionsAttributeName
+    ].call;
+
+    this.worldViewUpdateCall = this.bindingsManager.bindings[
+      this.config.worldViewUniformName
+    ].call;
+
     this.currentScene = new Scene(this.gl);
+
     this.currentCamera = new Camera({
       viewAngle: Math.PI / 4,
       near: 1,
       far: 2000,
       aspectRatio: canvasElement.width / canvasElement.height,
     });
+
+    this.currentScene.addChild(this.currentCamera);
   }
 
   public updateCanvasSize() {
@@ -51,26 +70,26 @@ class S3e {
   public draw() {
     this.gl.useProgram(this.config.programInfo.program);
     this.gl.enable(this.gl.DEPTH_TEST);
+    this.gl.enable(this.gl.CULL_FACE);
 
     // tslint:disable-next-line: no-bitwise
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
     for (const element of this.currentScene.elements) {
-      const update: DataBindingsValueUpdate = {
-        attributes: [[this.config.positionsAttribute, element.buffer]],
-        uniforms: [
-          [
-            this.config.projectionUniform,
-            multiply(
-              this.currentCamera.perspectiveMatrix,
-              element.object.absoluteMatrix
-            ),
-          ],
-          // [this.config.worldViewUniform, this.currentCamera.cameraMatrix],
-        ],
-      };
+      multiply(
+        this.currentCamera.perspectiveMatrix,
+        this.currentCamera.viewMatrix,
+        this.worldViewAllocation
+      );
 
-      this.bindingsManager.updateValues(update);
+      multiply(
+        this.worldViewAllocation,
+        element.object.absoluteMatrix,
+        this.worldViewAllocation
+      );
+
+      this.worldViewUpdateCall(this.worldViewAllocation, false);
+      this.positionUpdateCall(element.buffer);
 
       this.gl.drawArrays(
         this.gl.TRIANGLES,
@@ -78,6 +97,10 @@ class S3e {
         element.object.representation.pointsArray.length /
           element.object.representation.pointsPerFace
       );
+    }
+
+    for (const element of this.currentScene.elements) {
+      element.object.changed = false;
     }
   }
 }

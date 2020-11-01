@@ -4,7 +4,7 @@ import { Mat4 } from "./../3d/model";
 import { Object3d } from "./object3d.class";
 
 class Camera extends Object3d {
-  private viewMatrix: Mat4 = new Float32Array(16);
+  private _viewMat: Mat4 = new Float32Array(16);
   public perspectiveMatrix: Mat4;
 
   constructor(settings: CameraSettings) {
@@ -23,12 +23,12 @@ class Camera extends Object3d {
     this.changed = true;
   }
 
-  public get cameraMatrix() {
+  public get viewMatrix() {
     if (this.changed) {
-      invert(this.selfMatrix, this.viewMatrix);
+      invert(this.absoluteMatrix, this._viewMat);
     }
 
-    return this.viewMatrix;
+    return this._viewMat;
   }
 }
 

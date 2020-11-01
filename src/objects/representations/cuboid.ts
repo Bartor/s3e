@@ -16,7 +16,7 @@ function createCuboid(
       yHeight / 2,
       zDepth / 2,
       1,
-      xWidth / 2,
+      -xWidth / 2,
       -yHeight / 2,
       zDepth / 2,
       1,
@@ -26,12 +26,10 @@ function createCuboid(
       -yHeight / 2,
       zDepth / 2,
       1,
-
       xWidth / 2,
       -yHeight / 2,
       zDepth / 2,
       1,
-
       xWidth / 2,
       yHeight / 2,
       zDepth / 2,
@@ -39,63 +37,55 @@ function createCuboid(
 
       // right high
       xWidth / 2,
-      yHeight / 2,
-      zDepth / 2,
-      1,
-
-      xWidth / 2,
-      yHeight / 2,
-      -zDepth / 2,
-      1,
-
-      xWidth / 2,
       -yHeight / 2,
       -zDepth / 2,
+      1,
+      xWidth / 2,
+      yHeight / 2,
+      -zDepth / 2,
+      1,
+      xWidth / 2,
+      yHeight / 2,
+      zDepth / 2,
       1,
 
       // right low
       xWidth / 2,
-      -yHeight / 2,
-      -zDepth / 2,
+      yHeight / 2,
+      zDepth / 2,
       1,
-
       xWidth / 2,
       -yHeight / 2,
       zDepth / 2,
       1,
-
       xWidth / 2,
-      yHeight / 2,
+      -yHeight / 2,
       -zDepth / 2,
       1,
 
       // back low
       xWidth / 2,
-      -yHeight / 2,
-      -zDepth / 2,
-      1,
-
-      xWidth / 2,
       yHeight / 2,
       -zDepth / 2,
       1,
-
+      xWidth / 2,
+      -yHeight / 2,
+      -zDepth / 2,
+      1,
       -xWidth / 2,
       -yHeight / 2,
       -zDepth / 2,
       1,
 
       // back high
-      xWidth / 2,
-      yHeight / 2,
-      -zDepth / 2,
-      1,
-
       -xWidth / 2,
       yHeight / 2,
       -zDepth / 2,
       1,
-
+      xWidth / 2,
+      yHeight / 2,
+      -zDepth / 2,
+      1,
       -xWidth / 2,
       -yHeight / 2,
       -zDepth / 2,
@@ -103,15 +93,13 @@ function createCuboid(
 
       // left high
       -xWidth / 2,
-      -yHeight / 2,
-      -zDepth / 2,
-      1,
-
-      -xWidth / 2,
       yHeight / 2,
       -zDepth / 2,
       1,
-
+      -xWidth / 2,
+      -yHeight / 2,
+      -zDepth / 2,
+      1,
       -xWidth / 2,
       yHeight / 2,
       zDepth / 2,
@@ -119,15 +107,13 @@ function createCuboid(
 
       // left low
       -xWidth / 2,
-      yHeight / 2,
-      zDepth / 2,
-      1,
-
-      -xWidth / 2,
       -yHeight / 2,
       zDepth / 2,
       1,
-
+      -xWidth / 2,
+      yHeight / 2,
+      zDepth / 2,
+      1,
       -xWidth / 2,
       -yHeight / 2,
       -zDepth / 2,
@@ -138,12 +124,10 @@ function createCuboid(
       -yHeight / 2,
       zDepth / 2,
       1,
-
       -xWidth / 2,
       -yHeight / 2,
       zDepth / 2,
       1,
-
       xWidth / 2,
       -yHeight / 2,
       -zDepth / 2,
@@ -154,44 +138,38 @@ function createCuboid(
       -yHeight / 2,
       -zDepth / 2,
       1,
-
       xWidth / 2,
       -yHeight / 2,
       -zDepth / 2,
       1,
-
       -xWidth / 2,
       -yHeight / 2,
       zDepth / 2,
       1,
 
       // top close
-      xWidth / 2,
-      yHeight / 2,
-      zDepth / 2,
-      1,
-
       -xWidth / 2,
       yHeight / 2,
       zDepth / 2,
       1,
-
+      xWidth / 2,
+      yHeight / 2,
+      zDepth / 2,
+      1,
       xWidth / 2,
       yHeight / 2,
       -zDepth / 2,
       1,
 
       // top far
-      -xWidth / 2,
-      yHeight / 2,
-      -zDepth / 2,
-      1,
-
       xWidth / 2,
       yHeight / 2,
       -zDepth / 2,
       1,
-
+      -xWidth / 2,
+      yHeight / 2,
+      -zDepth / 2,
+      1,
       -xWidth / 2,
       yHeight / 2,
       zDepth / 2,

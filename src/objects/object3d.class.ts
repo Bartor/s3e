@@ -17,8 +17,7 @@ class Object3d {
   private _rot: Rotation3d = { x: 0, y: 0, z: 0 };
   private _sca: Scale3d = { x: 1, y: 1, z: 1 };
 
-  private _absMat: Mat4 = identity();
-  public selfMatrix: Mat4 = identity();
+  protected _absMat: Mat4 = identity();
 
   public changed = false;
 
@@ -28,12 +27,11 @@ class Object3d {
 
   public updateParent(parent: Object3d) {
     this.parent = parent;
-    multiply(this.selfMatrix, this.parent.selfMatrix, this._absMat);
+    multiply(this._absMat, this.parent._absMat, this._absMat);
   }
 
   public addChild(child: Object3d) {
     child.updateParent(this);
-    this.scene.connectScene(child);
     this.children.push(child);
   }
 
@@ -47,36 +45,28 @@ class Object3d {
   }
 
   public get absoluteMatrix() {
-    if (this.changed) {
-      this.selfMatrix = identity();
+    if (this.changed || this.parent.changed) {
+      this._absMat = identity();
 
       if (this._sca.x !== 1 || this._sca.y !== 1 || this._sca.z !== 1)
         scale(
-          this.selfMatrix,
+          this._absMat,
           this._sca.x,
           this._sca.y,
           this._sca.z,
-          this.selfMatrix
+          this._absMat
         );
 
       if (this._pos.x || this._pos.y || this._pos.z)
-        move(
-          this.selfMatrix,
-          this._pos.x,
-          this._pos.y,
-          this._pos.z,
-          this.selfMatrix
-        );
+        move(this._absMat, this._pos.x, this._pos.y, this._pos.z, this._absMat);
 
-      if (this._rot.x) rotateX(this.selfMatrix, this._rot.x, this.selfMatrix);
-      if (this._rot.y) rotateY(this.selfMatrix, this._rot.y, this.selfMatrix);
-      if (this._rot.z) rotateZ(this.selfMatrix, this._rot.z, this.selfMatrix);
+      if (this._rot.x) rotateX(this._absMat, this._rot.x, this._absMat);
+      if (this._rot.y) rotateY(this._absMat, this._rot.y, this._absMat);
+      if (this._rot.z) rotateZ(this._absMat, this._rot.z, this._absMat);
 
-      multiply(this.selfMatrix, this.parent.selfMatrix, this._absMat);
-    } else if (this.parent.changed) {
-      multiply(this.selfMatrix, this.parent.selfMatrix, this._absMat);
+      multiply(this.parent._absMat, this._absMat, this._absMat);
     }
-
+    
     return this._absMat;
   }
 

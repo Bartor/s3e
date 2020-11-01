@@ -3,13 +3,13 @@ import { ProgramInfo } from "./../shaders/model";
 
 export interface S3eConfiguration {
   programInfo: ProgramInfo;
-  positionsAttribute: string;
-  normalAttribute: string;
-  worldViewUniform: string;
-  projectionUniform: string;
+  positionsAttributeName: string;
+  normalAttributeName: string;
+  worldViewUniformName: string;
 }
 
 export interface SceneObject {
-  object: Object3d;
+  drawable: boolean;
   buffer: WebGLBuffer;
+  object: Object3d;
 }

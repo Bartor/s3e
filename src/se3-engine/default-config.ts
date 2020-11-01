@@ -13,9 +13,8 @@ export const getS3eDefaultConfiguration: (
 
   return {
     programInfo,
-    positionsAttribute: "a_position",
-    normalAttribute: "a_normal",
-    worldViewUniform: "u_worldView",
-    projectionUniform: "u_projection",
+    positionsAttributeName: "a_position",
+    normalAttributeName: "a_normal",
+    worldViewUniformName: "u_worldView",
   };
 };

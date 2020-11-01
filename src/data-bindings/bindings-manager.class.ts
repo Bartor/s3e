@@ -4,7 +4,7 @@ import { createUniformUpdateCall } from "./create-uniform-update-call";
 import { createAttributeUpdateCall } from "./create-attribute-binding-call";
 
 class BindingsManager {
-  private bindings: Record<
+  public bindings: Record<
     string,
     {
       call: DataUpdateCall<number | Float32Array | WebGLBuffer>;
@@ -39,13 +39,6 @@ class BindingsManager {
         type,
       };
     });
-  }
-
-  public listAvailableBindings(): Binded[] {
-    return Object.entries(this.bindings).map(([name, { type }]) => [
-      name,
-      type,
-    ]);
   }
 
   // Performance Critical
