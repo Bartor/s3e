@@ -9,8 +9,12 @@ function main() {
   const cubeChild = new Object3d(createCuboid(10));
   cubeChild.position.y = 30;
 
+  console.log(cubeChild.representation)
+
   cubeObject.addChild(cubeChild);
   engine.currentScene.addChild(cubeObject);
+
+  engine.currentScene.ambientLightLevel = 0.8;
 
   engine.currentCamera.position.z = 100;
 

@@ -10,6 +10,7 @@ class Object3d {
     public representation: PolygonRepresentation = {
       pointsPerFace: 0,
       pointsArray: new Float32Array(),
+      normalsArray: new Float32Array(),
     }
   ) {}
 
@@ -66,7 +67,7 @@ class Object3d {
 
       multiply(this.parent._absMat, this._absMat, this._absMat);
     }
-    
+
     return this._absMat;
   }
 

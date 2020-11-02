@@ -11,6 +11,7 @@ export type Scale3d = Vec3<number>;
 export interface PolygonRepresentation {
   pointsPerFace: number;
   pointsArray: Float32Array;
+  normalsArray: Float32Array;
 }
 
 export interface CameraSettings {

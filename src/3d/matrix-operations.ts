@@ -1,3 +1,4 @@
+import { Vec3 } from "./model";
 import { Mat4 } from "./model";
 
 export const identity = (): Mat4 =>
@@ -206,6 +207,24 @@ export const invert = (
       tmp16 * m02 +
       tmp21 * m12 -
       (tmp20 * m12 + tmp23 * m22 + tmp17 * m02));
+
+  return destination;
+};
+
+export const normalize = (
+  vector: Vec3,
+  destination: Vec3 = new Float32Array(3)
+) => {
+  const len = Math.sqrt(vector[0] ** 2 + vector[1] ** 2 + vector[2] ** 2);
+  if (len > 0) {
+    destination[0] = vector[0] / len;
+    destination[1] = vector[1] / len;
+    destination[2] = vector[2] / len;
+  } else {
+    destination[0] = 0;
+    destination[1] = 0;
+    destination[2] = 0;
+  }
 
   return destination;
 };

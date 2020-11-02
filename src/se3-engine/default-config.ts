@@ -14,7 +14,9 @@ export const getS3eDefaultConfiguration: (
   return {
     programInfo,
     positionsAttributeName: "a_position",
-    normalAttributeName: "a_normal",
+    normalsAttributeName: "a_normal",
     worldViewUniformName: "u_worldView",
+    ambientUniformName: "u_ambient",
+    lightDirectionUniformName: "u_reverseLightDirection",
   };
 };

@@ -4,12 +4,15 @@ import { ProgramInfo } from "./../shaders/model";
 export interface S3eConfiguration {
   programInfo: ProgramInfo;
   positionsAttributeName: string;
-  normalAttributeName: string;
+  normalsAttributeName: string;
   worldViewUniformName: string;
+  ambientUniformName: string;
+  lightDirectionUniformName: string;
 }
 
 export interface SceneObject {
   drawable: boolean;
-  buffer: WebGLBuffer;
+  positionsBuffer: WebGLBuffer;
+  normalsBuffer: WebGLBuffer;
   object: Object3d;
 }

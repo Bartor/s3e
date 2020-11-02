@@ -1,13 +1,11 @@
 import { multiply } from "./../3d/matrix-operations";
-import {
-  DataUpdateCall,
-} from "./../data-bindings/model";
+import { DataUpdateCall } from "./../data-bindings/model";
 import { BindingsManager } from "../data-bindings/bindings-manager.class";
 import { Camera } from "../objects/camera";
 import { Scene } from "./scene";
 import { getS3eDefaultConfiguration } from "./default-config";
 import { S3eConfiguration } from "./model";
-import { Mat4 } from "../3d/model";
+import { Mat4, Vec3 } from "../3d/model";
 
 class S3e {
   private worldViewAllocation = new Float32Array(16);
@@ -16,7 +14,10 @@ class S3e {
   private bindingsManager: BindingsManager;
 
   private positionUpdateCall: DataUpdateCall<WebGLBuffer>;
+  private normalsUpdateCall: DataUpdateCall<WebGLBuffer>;
   private worldViewUpdateCall: DataUpdateCall<Mat4>;
+  private ambientUpdateCall: DataUpdateCall<number>;
+  private lightDirectionUpdateCall: DataUpdateCall<Vec3>;
 
   public gl: WebGLRenderingContext;
   public currentScene: Scene;
@@ -39,8 +40,20 @@ class S3e {
       this.config.positionsAttributeName
     ].call;
 
+    this.normalsUpdateCall = this.bindingsManager.bindings[
+      this.config.normalsAttributeName
+    ].call;
+
     this.worldViewUpdateCall = this.bindingsManager.bindings[
       this.config.worldViewUniformName
+    ].call;
+
+    this.ambientUpdateCall = this.bindingsManager.bindings[
+      this.config.ambientUniformName
+    ].call;
+
+    this.lightDirectionUpdateCall = this.bindingsManager.bindings[
+      this.config.lightDirectionUniformName
     ].call;
 
     this.currentScene = new Scene(this.gl);
@@ -88,8 +101,12 @@ class S3e {
         this.worldViewAllocation
       );
 
+      this.positionUpdateCall(element.positionsBuffer);
+      this.normalsUpdateCall(element.normalsBuffer);
+
       this.worldViewUpdateCall(this.worldViewAllocation, false);
-      this.positionUpdateCall(element.buffer);
+      this.ambientUpdateCall(this.currentScene.ambientLightLevel);
+      this.lightDirectionUpdateCall(this.currentScene.lightDirection);
 
       this.gl.drawArrays(
         this.gl.TRIANGLES,
