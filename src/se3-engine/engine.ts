@@ -16,6 +16,7 @@ class S3e {
   private positionUpdateCall: DataUpdateCall<WebGLBuffer>;
   private normalsUpdateCall: DataUpdateCall<WebGLBuffer>;
   private worldViewUpdateCall: DataUpdateCall<Mat4>;
+  private normalMatrixUpdateCall: DataUpdateCall<Mat4>;
   private ambientUpdateCall: DataUpdateCall<number>;
   private lightDirectionUpdateCall: DataUpdateCall<Vec3>;
 
@@ -46,6 +47,10 @@ class S3e {
 
     this.worldViewUpdateCall = this.bindingsManager.bindings[
       this.config.worldViewUniformName
+    ].call;
+
+    this.normalMatrixUpdateCall = this.bindingsManager.bindings[
+      this.config.normalMatrixUniformName
     ].call;
 
     this.ambientUpdateCall = this.bindingsManager.bindings[
@@ -103,7 +108,7 @@ class S3e {
 
       this.positionUpdateCall(element.positionsBuffer);
       this.normalsUpdateCall(element.normalsBuffer);
-
+      this.normalMatrixUpdateCall(element.object.normalMatrix);
       this.worldViewUpdateCall(this.worldViewAllocation, false);
       this.ambientUpdateCall(this.currentScene.ambientLightLevel);
       this.lightDirectionUpdateCall(this.currentScene.lightDirection);

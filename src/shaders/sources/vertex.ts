@@ -5,13 +5,13 @@ attribute vec4 a_position;
 attribute vec3 a_normal;
 
 uniform mat4 u_worldView;
+uniform mat4 u_normal;
 
 varying vec3 v_normal;
 
 void main() {
     gl_Position = u_worldView * a_position;
-    v_normal = mat3(u_worldView) * a_normal;
-    // v_normal = a_normal;
+    v_normal = mat3(u_normal) * a_normal;
 }
 `;
 

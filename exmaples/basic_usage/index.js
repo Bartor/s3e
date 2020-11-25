@@ -9,7 +9,7 @@ function main() {
   const cubeChild = new Object3d(createCuboid(10));
   cubeChild.position.y = 30;
 
-  console.log(cubeChild.representation)
+  console.log(cubeChild.representation);
 
   cubeObject.addChild(cubeChild);
   engine.currentScene.addChild(cubeObject);
@@ -23,8 +23,8 @@ function main() {
 
     cubeObject.rotation.z = t / 1000;
     cubeObject.rotation.x = t / 1000;
-    cubeChild.rotation.y = t / 1000;
 
+    cubeChild.scale.y = Math.abs(Math.sin(t / 500)) + 0.5;
     cubeChild.position.y = 30 - 10 * Math.sin(t / 500);
 
     engine.draw();

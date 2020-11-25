@@ -1,3 +1,4 @@
+import { dest } from "gulp";
 import { Vec3 } from "./model";
 import { Mat4 } from "./model";
 
@@ -207,6 +208,55 @@ export const invert = (
       tmp16 * m02 +
       tmp21 * m12 -
       (tmp20 * m12 + tmp23 * m22 + tmp17 * m02));
+
+  return destination;
+};
+
+export const transpose = (
+  matrix: Mat4,
+  destination: Mat4 = new Float32Array(16)
+) => {
+  if (matrix === destination) {
+    let temp = matrix[1];
+    matrix[1] = matrix[4];
+    matrix[4] = temp;
+
+    temp = matrix[2];
+    matrix[2] = matrix[8];
+    matrix[8] = temp;
+
+    temp = matrix[3];
+    matrix[3] = matrix[12];
+    matrix[12] = temp;
+
+    temp = matrix[6];
+    matrix[6] = matrix[9];
+    matrix[9] = temp;
+
+    temp = matrix[7];
+    matrix[7] = matrix[13];
+    matrix[13] = temp;
+
+    temp = matrix[11];
+    matrix[11] = matrix[14];
+    matrix[14] = temp;
+  } else {
+    destination[1] = matrix[4];
+    destination[2] = matrix[8];
+    destination[3] = matrix[12];
+    destination[4] = matrix[1];
+    destination[5] = matrix[5];
+    destination[6] = matrix[9];
+    destination[7] = matrix[13];
+    destination[8] = matrix[2];
+    destination[9] = matrix[6];
+    destination[10] = matrix[10];
+    destination[11] = matrix[14];
+    destination[12] = matrix[3];
+    destination[13] = matrix[7];
+    destination[14] = matrix[11];
+    destination[15] = matrix[15];
+  }
 
   return destination;
 };

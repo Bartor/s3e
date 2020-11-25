@@ -5,6 +5,7 @@ export interface S3eConfiguration {
   programInfo: ProgramInfo;
   positionsAttributeName: string;
   normalsAttributeName: string;
+  normalMatrixUniformName: string;
   worldViewUniformName: string;
   ambientUniformName: string;
   lightDirectionUniformName: string;

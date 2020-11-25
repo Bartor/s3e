@@ -1,3 +1,4 @@
+import { invert, transpose } from "./../3d/matrix-operations";
 import { PolygonRepresentation } from "./model";
 import { identity, multiply, scale } from "../3d/matrix-operations";
 import { move, rotateX, rotateY, rotateZ } from "../3d/matrix-operations";
@@ -19,6 +20,7 @@ class Object3d {
   private _sca: Scale3d = { x: 1, y: 1, z: 1 };
 
   protected _absMat: Mat4 = identity();
+  protected _norMat: Mat4 = identity();
 
   public changed = false;
 
@@ -43,6 +45,15 @@ class Object3d {
       this.scene.disconnectScene(this.children[idx]);
       this.children.splice(idx, 1);
     }
+  }
+
+  public get normalMatrix() {
+    if (this.changed || this.parent.changed) {
+      this._norMat = invert(this.absoluteMatrix, this._norMat);
+      this._norMat = transpose(this._norMat, this._norMat);
+    }
+
+    return this._norMat;
   }
 
   public get absoluteMatrix() {

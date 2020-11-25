@@ -8,7 +8,7 @@ class Scene extends Object3d {
   public elements: SceneObject[] = [];
 
   public ambientLightLevel: number = 0.5;
-  private _lightDirection: Vec3 = normalize([0.5, 0.5, -0.5]);
+  private _lightDirection: Vec3 = normalize([-0.5, 0.5, 0.5]);
 
   constructor(private gl: WebGLRenderingContext) {
     super();

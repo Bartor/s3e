@@ -15,6 +15,7 @@ export const getS3eDefaultConfiguration: (
     programInfo,
     positionsAttributeName: "a_position",
     normalsAttributeName: "a_normal",
+    normalMatrixUniformName: "u_normal",
     worldViewUniformName: "u_worldView",
     ambientUniformName: "u_ambient",
     lightDirectionUniformName: "u_reverseLightDirection",
