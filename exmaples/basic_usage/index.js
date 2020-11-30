@@ -6,6 +6,35 @@ function main() {
   const engine = new S3e(canvas);
   const cubeObject = new Object3d(createCuboid(20));
 
+  const timeline = getPositionTimeline(cubeObject, 60);
+
+  const keyframe0 = {
+    frame: 0,
+    value: { x: 10, y: 10, z: 10 },
+    interpolation: KeyframeType.LINEAR,
+  };
+
+  const keyframe1 = {
+    frame: 10,
+    value: { x: 10, y: 10, z: 10 },
+    interpolation: KeyframeType.LINEAR,
+  };
+
+  timeline.addKeyframe(keyframe0);
+  timeline.addKeyframe(keyframe1);
+
+  console.log(timeline.keyframes);
+
+  const keyframe2 = {
+    frame: 5,
+    value: { x: 10, y: 10, z: 10 },
+    interpolation: KeyframeType.LINEAR,
+  };
+
+  timeline.addKeyframe(keyframe2);
+
+  console.log(timeline.keyframes);
+
   const cubeChild = new Object3d(createCuboid(10));
   cubeChild.position.y = 30;
 

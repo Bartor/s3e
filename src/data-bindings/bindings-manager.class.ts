@@ -1,4 +1,4 @@
-import { Binded, DataBindingsValueUpdate, DataUpdateCall } from "./model";
+import { DataBindingsValueUpdate, DataUpdateCall } from "./model";
 import { ProgramInfo } from "./../shaders/model";
 import { createUniformUpdateCall } from "./create-uniform-update-call";
 import { createAttributeUpdateCall } from "./create-attribute-binding-call";
