@@ -22,7 +22,6 @@ class S3e {
 
   public gl: WebGLRenderingContext;
   public currentScene: Scene;
-  public currentCamera: Camera;
 
   constructor(
     private canvasElement: HTMLCanvasElement,
@@ -61,16 +60,15 @@ class S3e {
       this.config.lightDirectionUniformName
     ].call;
 
-    this.currentScene = new Scene(this.gl);
-
-    this.currentCamera = new Camera({
-      viewAngle: Math.PI / 4,
-      near: 1,
-      far: 2000,
-      aspectRatio: canvasElement.width / canvasElement.height,
-    });
-
-    this.currentScene.addChild(this.currentCamera);
+    this.currentScene = new Scene(
+      this.gl,
+      new Camera({
+        viewAngle: Math.PI / 4,
+        near: 1,
+        far: 2000,
+        aspectRatio: canvasElement.width / canvasElement.height,
+      })
+    );
   }
 
   public updateCanvasSize() {
@@ -95,8 +93,8 @@ class S3e {
 
     for (const element of this.currentScene.elements) {
       multiply(
-        this.currentCamera.perspectiveMatrix,
-        this.currentCamera.viewMatrix,
+        this.currentScene.currentCamera.perspectiveMatrix,
+        this.currentScene.currentCamera.viewMatrix,
         this.worldViewAllocation
       );
 

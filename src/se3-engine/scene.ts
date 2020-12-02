@@ -7,11 +7,16 @@ import { SceneObject } from "./model";
 class Scene extends Object3d {
   public elements: SceneObject[] = [];
 
+  public currentCamera: Camera;
+
   public ambientLightLevel: number = 0.5;
   private _lightDirection: Vec3 = normalize([-0.5, 0.5, 0.5]);
 
-  constructor(private gl: WebGLRenderingContext) {
+  constructor(private gl: WebGLRenderingContext, camera: Camera) {
     super();
+
+    this.addChild(camera);
+    this.currentCamera = camera;
   }
 
   public set lightDirection(newDirection: Vec3) {

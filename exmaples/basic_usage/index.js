@@ -45,7 +45,7 @@ function main() {
 
   engine.currentScene.ambientLightLevel = 0.8;
 
-  engine.currentCamera.position.z = 100;
+  engine.currentScene.currentCamera.position.z = 100;
 
   function draw(t) {
     requestAnimationFrame(draw);
