@@ -1,48 +1,65 @@
-import { dest } from "gulp";
 import { Vec3 } from "./model";
 import { Mat4 } from "./model";
 
-export const identity = (): Mat4 =>
-  new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
+export const identity = (destination: Mat4 = new Float32Array(16)): Mat4 => {
+  destination[0] = 1;
+  destination[1] = 0;
+  destination[2] = 0;
+  destination[3] = 0;
+  destination[4] = 0;
+  destination[5] = 1;
+  destination[6] = 0;
+  destination[7] = 0;
+  destination[8] = 0;
+  destination[9] = 0;
+  destination[10] = 1;
+  destination[11] = 0;
+  destination[12] = 0;
+  destination[13] = 0;
+  destination[14] = 0;
+  destination[15] = 1;
+
+  return destination;
+};
 
 export const multiply = (
   matrixA: Mat4,
   matrixB: Mat4,
   destination: Mat4 = new Float32Array(16)
 ): Mat4 => {
-  const a00 = matrixA[0 * 4 + 0];
-  const a01 = matrixA[0 * 4 + 1];
-  const a02 = matrixA[0 * 4 + 2];
-  const a03 = matrixA[0 * 4 + 3];
-  const a10 = matrixA[1 * 4 + 0];
-  const a11 = matrixA[1 * 4 + 1];
-  const a12 = matrixA[1 * 4 + 2];
-  const a13 = matrixA[1 * 4 + 3];
-  const a20 = matrixA[2 * 4 + 0];
-  const a21 = matrixA[2 * 4 + 1];
-  const a22 = matrixA[2 * 4 + 2];
-  const a23 = matrixA[2 * 4 + 3];
-  const a30 = matrixA[3 * 4 + 0];
-  const a31 = matrixA[3 * 4 + 1];
-  const a32 = matrixA[3 * 4 + 2];
-  const a33 = matrixA[3 * 4 + 3];
+  const a00 = matrixA[0];
+  const a01 = matrixA[1];
+  const a02 = matrixA[2];
+  const a03 = matrixA[3];
+  const a10 = matrixA[4];
+  const a11 = matrixA[5];
+  const a12 = matrixA[6];
+  const a13 = matrixA[7];
+  const a20 = matrixA[8];
+  const a21 = matrixA[9];
+  const a22 = matrixA[10];
+  const a23 = matrixA[11];
+  const a30 = matrixA[12];
+  const a31 = matrixA[13];
+  const a32 = matrixA[14];
+  const a33 = matrixA[15];
 
-  const b00 = matrixB[0 * 4 + 0];
-  const b01 = matrixB[0 * 4 + 1];
-  const b02 = matrixB[0 * 4 + 2];
-  const b03 = matrixB[0 * 4 + 3];
-  const b10 = matrixB[1 * 4 + 0];
-  const b11 = matrixB[1 * 4 + 1];
-  const b12 = matrixB[1 * 4 + 2];
-  const b13 = matrixB[1 * 4 + 3];
-  const b20 = matrixB[2 * 4 + 0];
-  const b21 = matrixB[2 * 4 + 1];
-  const b22 = matrixB[2 * 4 + 2];
-  const b23 = matrixB[2 * 4 + 3];
-  const b30 = matrixB[3 * 4 + 0];
-  const b31 = matrixB[3 * 4 + 1];
-  const b32 = matrixB[3 * 4 + 2];
-  const b33 = matrixB[3 * 4 + 3];
+  const b00 = matrixB[0];
+  const b01 = matrixB[1];
+  const b02 = matrixB[2];
+  const b03 = matrixB[3];
+  const b10 = matrixB[4];
+  const b11 = matrixB[5];
+  const b12 = matrixB[6];
+  const b13 = matrixB[7];
+  const b20 = matrixB[8];
+  const b21 = matrixB[9];
+  const b22 = matrixB[10];
+  const b23 = matrixB[11];
+  const b30 = matrixB[12];
+  const b31 = matrixB[13];
+  const b32 = matrixB[14];
+  const b33 = matrixB[15];
 
   destination[0] = b00 * a00 + b01 * a10 + b02 * a20 + b03 * a30;
   destination[1] = b00 * a01 + b01 * a11 + b02 * a21 + b03 * a31;
@@ -68,22 +85,22 @@ export const invert = (
   matrix: Mat4,
   destination: Mat4 = new Float32Array(16)
 ) => {
-  const m00 = matrix[0 * 4 + 0];
-  const m01 = matrix[0 * 4 + 1];
-  const m02 = matrix[0 * 4 + 2];
-  const m03 = matrix[0 * 4 + 3];
-  const m10 = matrix[1 * 4 + 0];
-  const m11 = matrix[1 * 4 + 1];
-  const m12 = matrix[1 * 4 + 2];
-  const m13 = matrix[1 * 4 + 3];
-  const m20 = matrix[2 * 4 + 0];
-  const m21 = matrix[2 * 4 + 1];
-  const m22 = matrix[2 * 4 + 2];
-  const m23 = matrix[2 * 4 + 3];
-  const m30 = matrix[3 * 4 + 0];
-  const m31 = matrix[3 * 4 + 1];
-  const m32 = matrix[3 * 4 + 2];
-  const m33 = matrix[3 * 4 + 3];
+  const m00 = matrix[0];
+  const m01 = matrix[1];
+  const m02 = matrix[2];
+  const m03 = matrix[3];
+  const m10 = matrix[4];
+  const m11 = matrix[5];
+  const m12 = matrix[6];
+  const m13 = matrix[7];
+  const m20 = matrix[8];
+  const m21 = matrix[9];
+  const m22 = matrix[10];
+  const m23 = matrix[11];
+  const m30 = matrix[12];
+  const m31 = matrix[13];
+  const m32 = matrix[14];
+  const m33 = matrix[15];
   const tmp0 = m22 * m33;
   const tmp1 = m32 * m23;
   const tmp2 = m12 * m33;

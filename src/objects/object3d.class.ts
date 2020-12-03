@@ -58,7 +58,7 @@ class Object3d {
 
   public get absoluteMatrix() {
     if (this.changed || this.parent.changed) {
-      this._absMat = identity();
+      identity(this._absMat);
 
       if (this._sca.x !== 1 || this._sca.y !== 1 || this._sca.z !== 1)
         scale(
