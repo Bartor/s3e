@@ -23,6 +23,7 @@ class Object3d {
   protected _norMat: Mat4 = identity();
 
   public changed = false;
+  public updatedByChild = true;
 
   public children: Object3d[] = [];
   public parent: Object3d;
@@ -76,7 +77,12 @@ class Object3d {
       if (this._rot.y) rotateY(this._absMat, this._rot.y, this._absMat);
       if (this._rot.z) rotateZ(this._absMat, this._rot.z, this._absMat);
 
-      multiply(this.parent._absMat, this._absMat, this._absMat);
+      if (this.parent.changed && !this.parent.updatedByChild) {
+        multiply(this.parent.absoluteMatrix, this._absMat, this._absMat);
+        this.parent.updatedByChild = true;
+      } else {
+        multiply(this.parent._absMat, this._absMat, this._absMat);
+      }
     }
 
     return this._absMat;
@@ -90,6 +96,7 @@ class Object3d {
         set: (value: number) => {
           this._pos.x = value;
           this.changed = true;
+          this.updatedByChild = false;
         },
       },
       y: {
@@ -97,6 +104,7 @@ class Object3d {
         set: (value: number) => {
           this._pos.y = value;
           this.changed = true;
+          this.updatedByChild = false;
         },
       },
       z: {
@@ -104,6 +112,7 @@ class Object3d {
         set: (value: number) => {
           this._pos.z = value;
           this.changed = true;
+          this.updatedByChild = false;
         },
       },
     }

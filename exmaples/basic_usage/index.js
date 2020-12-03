@@ -6,8 +6,6 @@ function main() {
   const engine = new S3e(canvas);
   const cubeObject = new Object3d(createCuboid(20));
 
-  const timeline = getPositionTimeline(cubeObject, 60);
-
   const cubeChild = new Object3d(createCuboid(10));
   cubeChild.position.y = 30;
 
