@@ -1,4 +1,4 @@
-import { multiply } from "./../3d/matrix-operations";
+import { identity, multiply } from "./../3d/matrix-operations";
 import { DataUpdateCall } from "./../data-bindings/model";
 import { BindingsManager } from "../data-bindings/bindings-manager.class";
 import { Camera } from "../objects/camera";
@@ -8,7 +8,7 @@ import { S3eConfiguration } from "./model";
 import { Mat4, Vec3 } from "../3d/model";
 
 class S3e {
-  private worldViewAllocation = new Float32Array(16);
+  private worldView: Mat4 = identity();
 
   private config: S3eConfiguration;
   private bindingsManager: BindingsManager;
@@ -93,21 +93,18 @@ class S3e {
 
     for (const element of this.currentScene.elements) {
       multiply(
-        this.currentScene.currentCamera.perspectiveMatrix,
-        this.currentScene.currentCamera.viewMatrix,
-        this.worldViewAllocation
-      );
-
-      multiply(
-        this.worldViewAllocation,
+        this.currentScene.currentCamera.viewProjection,
         element.object.absoluteMatrix,
-        this.worldViewAllocation
+        this.worldView
       );
 
       this.positionUpdateCall(element.positionsBuffer);
       this.normalsUpdateCall(element.normalsBuffer);
+
+      this.worldViewUpdateCall(this.worldView);
+
       this.normalMatrixUpdateCall(element.object.normalMatrix);
-      this.worldViewUpdateCall(this.worldViewAllocation, false);
+
       this.ambientUpdateCall(this.currentScene.ambientLightLevel);
       this.lightDirectionUpdateCall(this.currentScene.lightDirection);
 

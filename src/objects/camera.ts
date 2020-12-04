@@ -1,4 +1,4 @@
-import { invert, perspective } from "./../3d/matrix-operations";
+import { invert, multiply, perspective } from "./../3d/matrix-operations";
 import { CameraSettings } from "./model";
 import { Mat4 } from "./../3d/model";
 import { Object3d } from "./object3d.class";
@@ -23,9 +23,10 @@ class Camera extends Object3d {
     this.changed = true;
   }
 
-  public get viewMatrix() {
+  public get viewProjection() {
     if (this.changed) {
       invert(this.absoluteMatrix, this._viewMat);
+      multiply(this.perspectiveMatrix, this._viewMat, this._viewMat);
     }
 
     return this._viewMat;

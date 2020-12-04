@@ -1,5 +1,5 @@
-import { normalize } from "./../3d/matrix-operations";
-import { Vec3 } from "./../3d/model";
+import { identity, normalize } from "./../3d/matrix-operations";
+import { Mat4, Vec3 } from "./../3d/model";
 import { Camera } from "../objects/camera";
 import { Object3d } from "../objects/object3d.class";
 import { SceneObject } from "./model";
