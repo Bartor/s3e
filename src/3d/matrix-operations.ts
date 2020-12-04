@@ -1,3 +1,4 @@
+import { Position3d } from "./../objects/model";
 import { Vec3 } from "./model";
 import { Mat4 } from "./model";
 

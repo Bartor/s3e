@@ -61,6 +61,13 @@ class Object3d {
     if (this.changed || this.parent.changed) {
       identity(this._absMat);
 
+      if (this._pos.x || this._pos.y || this._pos.z)
+        move(this._absMat, this._pos.x, this._pos.y, this._pos.z, this._absMat);
+
+      if (this._rot.x) rotateX(this._absMat, this._rot.x, this._absMat);
+      if (this._rot.y) rotateY(this._absMat, this._rot.y, this._absMat);
+      if (this._rot.z) rotateZ(this._absMat, this._rot.z, this._absMat);
+
       if (this._sca.x !== 1 || this._sca.y !== 1 || this._sca.z !== 1)
         scale(
           this._absMat,
@@ -69,13 +76,6 @@ class Object3d {
           this._sca.z,
           this._absMat
         );
-
-      if (this._pos.x || this._pos.y || this._pos.z)
-        move(this._absMat, this._pos.x, this._pos.y, this._pos.z, this._absMat);
-
-      if (this._rot.x) rotateX(this._absMat, this._rot.x, this._absMat);
-      if (this._rot.y) rotateY(this._absMat, this._rot.y, this._absMat);
-      if (this._rot.z) rotateZ(this._absMat, this._rot.z, this._absMat);
 
       if (this.parent.changed && !this.parent.updatedByChild) {
         multiply(this.parent.absoluteMatrix, this._absMat, this._absMat);

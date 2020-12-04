@@ -13,17 +13,20 @@ function main() {
   engine.currentScene.addChild(cubeObject);
 
   engine.currentScene.ambientLightLevel = 0.8;
-
   engine.currentScene.currentCamera.position.z = 100;
 
   function draw(t) {
     requestAnimationFrame(draw);
 
-    cubeObject.rotation.z = t / 1000;
-    cubeObject.rotation.x = t / 1000;
-
     cubeChild.scale.y = Math.abs(Math.sin(t / 500)) + 0.5;
     cubeChild.position.y = 30 - 10 * Math.sin(t / 500);
+
+    cubeChild.rotation.y = t / 1000;
+
+    cubeObject.position.y = 20 + 20 * Math.sin(t / 250);
+    cubeObject.position.x = 10 * Math.sin(t / 500);
+
+    engine.currentScene.currentCamera.lookAt(cubeObject.position);
 
     engine.draw();
   }
