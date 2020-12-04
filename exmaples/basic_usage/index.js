@@ -23,8 +23,8 @@ function main() {
 
     cubeChild.rotation.y = t / 1000;
 
-    cubeObject.position.y = 20 + 20 * Math.sin(t / 250);
-    cubeObject.position.x = 10 * Math.sin(t / 500);
+    cubeObject.position.y = 100 * Math.sin(t / 500);
+    cubeObject.position.x = 100 * Math.sin(t / 500);
 
     engine.currentScene.currentCamera.lookAt(cubeObject.position);
 

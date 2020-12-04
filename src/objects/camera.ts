@@ -51,11 +51,11 @@ class Camera extends Object3d {
     }
 
     this.rotation.z =
-      Math.PI / 2 -
       Math.atan2(
         Math.cos(this.rotation.x),
         Math.sin(this.rotation.x) * Math.sin(this.rotation.y)
-      );
+      ) -
+      Math.PI / 2;
   }
 }
 
