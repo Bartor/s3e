@@ -1,5 +1,5 @@
-import { identity, normalize } from "./../3d/matrix-operations";
-import { Mat4, Vec3 } from "./../3d/model";
+import { normalize } from "./../3d/matrix-operations";
+import { Vec3 } from "./../3d/model";
 import { Camera } from "../objects/camera";
 import { Object3d } from "../objects/object3d.class";
 import { SceneObject } from "./model";
@@ -7,7 +7,7 @@ import { SceneObject } from "./model";
 class Scene extends Object3d {
   public elements: SceneObject[] = [];
 
-  public currentCamera: Camera;
+  private _camera: Camera;
 
   public ambientLightLevel: number = 0.5;
   private _lightDirection: Vec3 = normalize([-0.5, 0.5, 0.5]);
@@ -17,6 +17,16 @@ class Scene extends Object3d {
 
     this.addChild(camera);
     this.currentCamera = camera;
+  }
+
+  public get currentCamera() {
+    return this._camera;
+  }
+
+  public set currentCamera(camera: Camera) {
+    this.connectScene(camera);
+    this._camera = camera;
+    camera.changed = true;
   }
 
   public set lightDirection(newDirection: Vec3) {

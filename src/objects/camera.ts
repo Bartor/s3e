@@ -24,7 +24,7 @@ class Camera extends Object3d {
   }
 
   public get viewProjection() {
-    if (this.changed) {
+    if (this.changed || this.parent.changed) {
       invert(this.absoluteMatrix, this._viewMat);
       multiply(this.perspectiveMatrix, this._viewMat, this._viewMat);
     }
