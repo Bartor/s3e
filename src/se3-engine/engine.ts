@@ -15,6 +15,7 @@ class S3e {
 
   private positionUpdateCall: DataUpdateCall<WebGLBuffer>;
   private normalsUpdateCall: DataUpdateCall<WebGLBuffer>;
+  private colorsUpdateCall: DataUpdateCall<WebGLBuffer>;
   private worldViewUpdateCall: DataUpdateCall<Mat4>;
   private normalMatrixUpdateCall: DataUpdateCall<Mat4>;
   private ambientUpdateCall: DataUpdateCall<number>;
@@ -42,6 +43,10 @@ class S3e {
 
     this.normalsUpdateCall = this.bindingsManager.bindings[
       this.config.normalsAttributeName
+    ].call;
+
+    this.colorsUpdateCall = this.bindingsManager.bindings[
+      this.config.colorsAttributeName
     ].call;
 
     this.worldViewUpdateCall = this.bindingsManager.bindings[
@@ -100,6 +105,7 @@ class S3e {
 
       this.positionUpdateCall(element.positionsBuffer);
       this.normalsUpdateCall(element.normalsBuffer);
+      this.colorsUpdateCall(element.colorsBuffer);
 
       this.worldViewUpdateCall(this.worldView);
 

@@ -12,6 +12,7 @@ export interface PolygonRepresentation {
   pointsPerFace: number;
   pointsArray: Float32Array;
   normalsArray: Float32Array;
+  colorsArray: Float32Array;
 }
 
 export interface CameraSettings {

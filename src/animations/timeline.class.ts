@@ -1,12 +1,14 @@
 import { Keyframe } from "./keyframe";
-import { Object3d } from "../objects/object3d.class";
 
 class Timeline<T> {
   private keyframes: Keyframe<T>[] = [];
   private evaluatedLast: boolean = false;
+  private timespan: number = 0;
+
+  public loop: boolean = false;
+  public offset: number = 0;
 
   constructor(
-    private object: Object3d,
     private fps: number,
     private valueChangeCallback: ValueChangeCallback<T>,
     initialFrame: Keyframe<T>
@@ -22,6 +24,9 @@ class Timeline<T> {
     if (keyframe.frame > this.keyframes[this.keyframes.length - 1].frame) {
       this.keyframes.push(keyframe);
       this.evaluatedLast = false;
+
+      this.timespan =
+        this.keyframes[this.keyframes.length - 1].frame / this.fps;
       return;
     }
 
@@ -33,15 +38,26 @@ class Timeline<T> {
     for (let i = 0; i < this.keyframes.length; i++) {
       if (this.keyframes[i].frame === keyframe.frame) {
         this.keyframes[i] = keyframe;
+
+        this.timespan =
+          this.keyframes[this.keyframes.length - 1].frame / this.fps;
         return;
       }
     }
 
     this.keyframes.push(keyframe);
     this.keyframes = this.keyframes.sort((a, b) => a.frame - b.frame);
+
+    this.timespan = this.keyframes[this.keyframes.length - 1].frame / this.fps;
   }
 
   public evaluateAt(time: number) {
+    time = Math.max(0, time - this.offset);
+
+    if (this.loop) {
+      time = time % this.timespan || 0;
+    }
+
     if (this.keyframes.length === 1) {
       if (!this.evaluatedLast) {
         this.valueChangeCallback(
@@ -50,7 +66,7 @@ class Timeline<T> {
           this.keyframes[0].value
         );
 
-        this.evaluatedLast = true;
+        this.evaluatedLast = true && !this.loop;
       }
     } else if (
       time >=
@@ -62,7 +78,7 @@ class Timeline<T> {
           this.keyframes[this.keyframes.length - 1].value,
           this.keyframes[this.keyframes.length - 1].value
         );
-        this.evaluatedLast = true;
+        this.evaluatedLast = true && !this.loop;
       }
     } else {
       for (let i = 0; i < this.keyframes.length; i++) {

@@ -10,7 +10,7 @@ class Scene extends Object3d {
   private _camera: Camera;
 
   public ambientLightLevel: number = 0.5;
-  private _lightDirection: Vec3 = normalize([-0.5, 0.5, 0.5]);
+  private _lightDirection: Vec3 = normalize([-0.5, 0.2, 0.8]);
 
   constructor(private gl: WebGLRenderingContext, camera: Camera) {
     super();
@@ -58,10 +58,19 @@ class Scene extends Object3d {
       this.gl.STATIC_DRAW
     );
 
+    const colorsBuffer = this.gl.createBuffer();
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, colorsBuffer);
+    this.gl.bufferData(
+      this.gl.ARRAY_BUFFER,
+      child.representation.colorsArray,
+      this.gl.STATIC_DRAW
+    );
+
     this.elements.push({
       drawable: !(child instanceof Camera),
       positionsBuffer,
       normalsBuffer,
+      colorsBuffer,
       object: child,
     });
 

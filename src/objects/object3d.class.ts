@@ -1,3 +1,4 @@
+import { createGetters } from "./util/create-getters";
 import { invert, transpose } from "./../3d/matrix-operations";
 import { PolygonRepresentation } from "./model";
 import { identity, multiply, scale } from "../3d/matrix-operations";
@@ -12,6 +13,7 @@ class Object3d {
       pointsPerFace: 0,
       pointsArray: new Float32Array(),
       normalsArray: new Float32Array(),
+      colorsArray: new Float32Array(),
     }
   ) {}
 
@@ -88,89 +90,41 @@ class Object3d {
     return this._absMat;
   }
 
-  public readonly position: Position3d = Object.defineProperties(
-    {},
-    {
-      x: {
-        get: () => this._pos.x,
-        set: (value: number) => {
-          this._pos.x = value;
-          this.changed = true;
-          this.updatedByChild = false;
-        },
-      },
-      y: {
-        get: () => this._pos.y,
-        set: (value: number) => {
-          this._pos.y = value;
-          this.changed = true;
-          this.updatedByChild = false;
-        },
-      },
-      z: {
-        get: () => this._pos.z,
-        set: (value: number) => {
-          this._pos.z = value;
-          this.changed = true;
-          this.updatedByChild = false;
-        },
-      },
-    }
-  );
+  public get position() {
+    return this.positionGetters;
+  }
 
-  public readonly rotation: Rotation3d = Object.defineProperties(
-    {},
-    {
-      x: {
-        get: () => this._rot.x,
-        set: (value: number) => {
-          this._rot.x = value;
-          this.changed = true;
-        },
-      },
-      y: {
-        get: () => this._rot.y,
-        set: (value: number) => {
-          this._rot.y = value;
-          this.changed = true;
-        },
-      },
-      z: {
-        get: () => this._rot.z,
-        set: (value: number) => {
-          this._rot.z = value;
-          this.changed = true;
-        },
-      },
-    }
-  );
+  public set position(newPosition: Partial<Position3d>) {
+    this.position.x = newPosition.x ?? this.position.x;
+    this.position.y = newPosition.y ?? this.position.y;
+    this.position.z = newPosition.z ?? this.position.z;
+  }
 
-  public readonly scale: Scale3d = Object.defineProperties(
-    {},
-    {
-      x: {
-        get: () => this._sca.x,
-        set: (value: number) => {
-          this._sca.x = value;
-          this.changed = true;
-        },
-      },
-      y: {
-        get: () => this._sca.y,
-        set: (value: number) => {
-          this._sca.y = value;
-          this.changed = true;
-        },
-      },
-      z: {
-        get: () => this._sca.z,
-        set: (value: number) => {
-          this._sca.z = value;
-          this.changed = true;
-        },
-      },
-    }
-  );
+  private positionGetters: Position3d = createGetters(this, this._pos);
+
+  public get rotation() {
+    return this.rotationGetters;
+  }
+
+  public set rotation(newRotation: Partial<Rotation3d>) {
+    this.rotation.x = newRotation.x ?? this.rotation.x;
+    this.rotation.y = newRotation.y ?? this.rotation.y;
+    this.rotation.z = newRotation.z ?? this.rotation.z;
+  }
+
+  private rotationGetters: Rotation3d = createGetters(this, this._rot);
+
+  private scaleGetters: Scale3d = createGetters(this, this._sca);
+
+  public get scale() {
+    return this.scaleGetters;
+  }
+
+  public set scale(newScale: Partial<Scale3d>) {
+    this.scale.x = newScale.x ?? this.scale.x;
+    this.scale.y = newScale.y ?? this.scale.y;
+    this.scale.z = newScale.z ?? this.scale.z;
+  }
 }
 
 export { Object3d };

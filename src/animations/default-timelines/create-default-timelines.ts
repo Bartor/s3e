@@ -5,7 +5,6 @@ import { Timeline } from "../timeline.class";
 
 export const getPositionTimeline = (object: Object3d, fps: number) =>
   new Timeline<Position3d>(
-    object,
     fps,
     (progress, previous, next) => {
       object.position.x = progress * next.x + (1 - progress) * previous.x;

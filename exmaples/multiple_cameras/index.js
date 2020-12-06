@@ -4,15 +4,13 @@ function main() {
   const canvas = document.getElementById("example");
 
   const engine = new S3e(canvas);
-  const cubeObject = new Object3d(createCuboid(20));
+  const cubeObject = new Object3d(createCuboid([0, 0.44, 1, 1], 20));
 
-  const cubeObject2 = new Object3d(createCuboid(20));
-  cubeObject2.position.z = -20;
-  cubeObject2.position.x = 20;
-  cubeObject2.position.y = -20;
+  const pyramid = new Object3d(createPyramid([1, 0.33, 0, 1], 20, 20, 20));
+  pyramid.position = { x: 20, y: -20, z: -20 };
 
   engine.currentScene.addChild(cubeObject);
-  engine.currentScene.addChild(cubeObject2);
+  engine.currentScene.addChild(pyramid);
 
   engine.currentScene.ambientLightLevel = 0.8;
   engine.currentScene.currentCamera.position.z = 100;
@@ -25,9 +23,7 @@ function main() {
     aspectRatio: 1,
   });
 
-  cameraTwo.position.z = 50;
-  cameraTwo.position.x = 50;
-  cameraTwo.position.y = 50;
+  cameraTwo.position = { x: 50, y: 50, z: 50 };
 
   engine.currentScene.addChild(cameraTwo);
 
@@ -39,9 +35,7 @@ function main() {
   });
 
   cubeObject.addChild(cameraThree);
-  cameraThree.position.z = 100;
-  cameraThree.position.y = 20;
-  cameraThree.position.x = 20;
+  cameraThree.position = { x: 20, y: 20, z: 100 };
   cameraThree.lookAt({ x: 0, y: 0, z: 0 });
 
   function draw(t) {

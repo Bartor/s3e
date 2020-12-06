@@ -12,11 +12,13 @@ import { parseShader } from "./shaders/parse-shader";
 import { Scene } from "./se3-engine/scene";
 import { Timeline } from "./animations/timeline.class";
 import { getPositionTimeline } from "./animations/default-timelines/create-default-timelines";
+import { createPyramid } from "./objects/representations/pyramid";
 
 export {
   BindingsManager,
   Camera,
   createCuboid,
+  createPyramid,
   createProgram,
   getFragmentShader,
   getS3eDefaultConfiguration,
