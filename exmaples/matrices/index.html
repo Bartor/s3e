@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="../../dist/main-bundle.js"></script>
+    <script src="index.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        background-color: #111;
+      }
+
+      #example {
+        width: 700px;
+        height: 500px;
+      }
+
+      table {
+        font-family: monospace;
+        color: white;
+        font-size: 2rem;
+      }
+
+      td {
+        padding: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="example"></canvas>
+    <table>
+      <tr>
+        <td>1</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+      </tr>
+      <tr>
+        <td>0</td>
+        <td>1</td>
+        <td>0</td>
+        <td>0</td>
+      </tr>
+      <tr>
+        <td>0</td>
+        <td>0</td>
+        <td>1</td>
+        <td>0</td>
+      </tr>
+      <tr>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>1</td>
+      </tr>
+    </table>
+  </body>
+</html>

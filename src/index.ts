@@ -11,7 +11,11 @@ import { getVertexShader } from "./shaders/sources/vertex";
 import { parseShader } from "./shaders/parse-shader";
 import { Scene } from "./se3-engine/scene";
 import { Timeline } from "./animations/timeline.class";
-import { getPositionTimeline } from "./animations/default-timelines/create-default-timelines";
+import {
+  getPositionTimeline,
+  getRotationTimeline,
+  getScaleTimeline,
+} from "./animations/default-timelines/object3d-timelines";
 import { createPyramid } from "./objects/representations/pyramid";
 
 export {
@@ -30,5 +34,7 @@ export {
   Timeline,
   Keyframe,
   getPositionTimeline,
+  getScaleTimeline,
+  getRotationTimeline,
   KeyframeType,
 };
