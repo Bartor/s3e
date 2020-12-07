@@ -52,6 +52,15 @@ class Timeline<T> {
   }
 
   public evaluateAt(time: number) {
+    if (
+      time > this.keyframes[this.keyframes.length - 1].frame / this.fps &&
+      this.evaluatedLast
+    ) {
+      return;
+    } else {
+      this.evaluatedLast = false;
+    }
+
     time = Math.max(0, time - this.offset);
 
     if (this.loop) {
@@ -59,27 +68,23 @@ class Timeline<T> {
     }
 
     if (this.keyframes.length === 1) {
-      if (!this.evaluatedLast) {
-        this.valueChangeCallback(
-          1,
-          this.keyframes[0].value,
-          this.keyframes[0].value
-        );
+      this.valueChangeCallback(
+        1,
+        this.keyframes[0].value,
+        this.keyframes[0].value
+      );
 
-        this.evaluatedLast = true && !this.loop;
-      }
+      this.evaluatedLast = true && !this.loop;
     } else if (
       time >=
       this.keyframes[this.keyframes.length - 1].frame / this.fps
     ) {
-      if (!this.evaluatedLast) {
-        this.valueChangeCallback(
-          1,
-          this.keyframes[this.keyframes.length - 1].value,
-          this.keyframes[this.keyframes.length - 1].value
-        );
-        this.evaluatedLast = true && !this.loop;
-      }
+      this.valueChangeCallback(
+        1,
+        this.keyframes[this.keyframes.length - 1].value,
+        this.keyframes[this.keyframes.length - 1].value
+      );
+      this.evaluatedLast = true && !this.loop;
     } else {
       for (let i = 0; i < this.keyframes.length; i++) {
         if (i === this.keyframes.length - 1) {

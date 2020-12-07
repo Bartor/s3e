@@ -20,7 +20,7 @@ function main() {
     viewAngle: Math.PI / 6,
     near: 1,
     far: 2000,
-    aspectRatio: 1,
+    aspectRatio: canvas.clientWidth / canvas.clientHeight,
   });
 
   cameraTwo.position = { x: 50, y: 50, z: 50 };
@@ -31,7 +31,7 @@ function main() {
     viewAngle: Math.PI / 6,
     near: 1,
     far: 2000,
-    aspectRatio: 1,
+    aspectRatio: canvas.clientWidth / canvas.clientHeight,
   });
 
   cubeObject.addChild(cameraThree);
