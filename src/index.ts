@@ -1,3 +1,4 @@
+import { loadObj } from "./loaders/obj-loader";
 import { Keyframe, KeyframeType } from "./animations/keyframe";
 import { getS3eDefaultConfiguration } from "./se3-engine/default-config";
 import { BindingsManager } from "./data-bindings/bindings-manager.class";
@@ -37,4 +38,5 @@ export {
   getScaleTimeline,
   getRotationTimeline,
   KeyframeType,
+  loadObj,
 };
