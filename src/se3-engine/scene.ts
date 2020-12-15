@@ -58,7 +58,7 @@ class Scene extends Object3d {
         .toString()
         .localeCompare(b.object.bufferData.positions?.hash.toString())
     );
-    
+
     for (const childChild of child.children) {
       this.connectScene(childChild);
     }
