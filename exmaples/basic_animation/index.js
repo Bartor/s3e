@@ -4,7 +4,9 @@ function main() {
   const canvas = document.getElementById("example");
 
   const engine = new S3e(canvas);
-  const cubeObject = new Object3d(createCuboid([0, 0.44, 1, 1], 20));
+  const cubeObject = new Object3d(
+    engine.bufferManager.loadShape(createCuboid(20), [0, 0.44, 1, 1])
+  );
 
   const timeline = getPositionTimeline(cubeObject, 60);
   timeline.loop = true;

@@ -1,6 +1,4 @@
-import { Vec4 } from "./../3d/model";
-import { createNormals } from "./../objects/util/create-normals";
-import { PolygonRepresentation } from "./../objects/model";
+import { createNormals } from "./create-normals";
 
 interface ParsingState {
   vertices: number[][];
@@ -43,10 +41,7 @@ const parsePart = (part: string[], state: ParsingState) => {
   }
 };
 
-export const loadObj = (
-  objFileContents: string,
-  color: Vec4
-): PolygonRepresentation => {
+export const loadObj = (objFileContents: string) => {
   const state: ParsingState = {
     vertices: [],
     normals: [],
@@ -59,17 +54,11 @@ export const loadObj = (
     .filter((line) => !line.startsWith("#"))
     .forEach((line) => parsePart(line.split(" "), state));
 
-  const pointsArray = new Float32Array(state.positionsArray);
-
   return {
-    pointsPerFace: 4,
-    pointsArray,
-    normalsArray:
+    positions: new Float32Array(state.positionsArray),
+    normals:
       state.normalsArray.length > 0
         ? new Float32Array(state.normalsArray)
-        : createNormals(pointsArray),
-    colorsArray: new Float32Array(
-      state.positionsArray.map((_, i) => color[i % color.length])
-    ),
+        : createNormals(state.positionsArray),
   };
 };

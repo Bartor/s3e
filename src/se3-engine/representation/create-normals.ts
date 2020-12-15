@@ -1,5 +1,6 @@
-export const createNormals = (pointsArray: Float32Array): Float32Array => {
-  // Normals don't use forth coord
+export const createNormals = (
+  pointsArray: number[] | Float32Array
+): Float32Array => {
   const normalsArray = new Float32Array((pointsArray.length / 4) * 3);
 
   // Each triable consist of 12 points

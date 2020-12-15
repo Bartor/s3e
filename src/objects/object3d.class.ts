@@ -1,19 +1,19 @@
 import { createGetters } from "./util/create-getters";
-import { invert, transpose } from "./../3d/matrix-operations";
-import { PolygonRepresentation } from "./model";
+import { copy, invert, transpose } from "./../3d/matrix-operations";
 import { identity, multiply, scale } from "../3d/matrix-operations";
 import { move, rotateX, rotateY, rotateZ } from "../3d/matrix-operations";
 import { Mat4 } from "../3d/model";
 import { Position3d, Rotation3d, Scale3d } from "./model";
 import { Scene } from "../se3-engine/scene";
+import { BufferData } from "../se3-engine/model";
 
 class Object3d {
   constructor(
-    public representation: PolygonRepresentation = {
-      pointsPerFace: 0,
-      pointsArray: new Float32Array(),
-      normalsArray: new Float32Array(),
-      colorsArray: new Float32Array(),
+    public bufferData: BufferData = {
+      defaultScale: { x: 1, y: 1, z: 1 },
+      positions: undefined,
+      normals: undefined,
+      colors: undefined,
     }
   ) {}
 
@@ -52,8 +52,19 @@ class Object3d {
 
   public get normalMatrix() {
     if (this.changed || this.parent.changed) {
-      this._norMat = invert(this.absoluteMatrix, this._norMat);
-      this._norMat = transpose(this._norMat, this._norMat);
+      if (this.bufferData.defaultScale !== undefined) {
+        scale(
+          this.absoluteMatrix,
+          this.bufferData.defaultScale.x,
+          this.bufferData.defaultScale.y,
+          this.bufferData.defaultScale.z,
+          this._norMat
+        );
+        invert(this._norMat, this._norMat);
+      } else {
+        invert(this.absoluteMatrix, this._norMat);
+      }
+      transpose(this._norMat, this._norMat);
     }
 
     return this._norMat;

@@ -1,10 +1,8 @@
-import { loadObj } from "./loaders/obj-loader";
 import { Keyframe, KeyframeType } from "./animations/keyframe";
 import { getS3eDefaultConfiguration } from "./se3-engine/default-config";
 import { BindingsManager } from "./data-bindings/bindings-manager.class";
 import { Camera } from "./objects/camera";
 import { Object3d } from "./objects/object3d.class";
-import { createCuboid } from "./objects/representations/cuboid";
 import { S3e } from "./se3-engine/engine";
 import { createProgram } from "./shaders/create-program";
 import { getFragmentShader } from "./shaders/sources/fragment";
@@ -17,26 +15,26 @@ import {
   getRotationTimeline,
   getScaleTimeline,
 } from "./animations/default-timelines/object3d-timelines";
-import { createPyramid } from "./objects/representations/pyramid";
+import { createPyramid } from "./se3-engine/representation/shapes/pyramid";
+import { createCuboid } from "./se3-engine/representation/shapes/cuboid";
 
 export {
   BindingsManager,
   Camera,
   createCuboid,
-  createPyramid,
   createProgram,
+  createPyramid,
   getFragmentShader,
+  getPositionTimeline,
+  getRotationTimeline,
   getS3eDefaultConfiguration,
+  getScaleTimeline,
   getVertexShader,
+  Keyframe,
+  KeyframeType,
   Object3d,
   parseShader,
   S3e,
   Scene,
   Timeline,
-  Keyframe,
-  getPositionTimeline,
-  getScaleTimeline,
-  getRotationTimeline,
-  KeyframeType,
-  loadObj,
 };

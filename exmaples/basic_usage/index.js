@@ -5,11 +5,19 @@ function main() {
 
   const engine = new S3e(canvas);
 
-  const cube = new Object3d(createCuboid([0, 0.44, 1, 1], 20));
+  const cube = new Object3d(
+    engine.bufferManager.loadShape(createCuboid(20), [0, 0.44, 1, 1])
+  );
 
-  const pyramid1 = new Object3d(createPyramid([0, 0.66, 0, 1], 10, 10, 7));
-  const pyramid2 = new Object3d(createPyramid([0.8, 0.8, 0, 1], 10, 10, 7));
-  const pyramid3 = new Object3d(createPyramid([1, 0, 0.5, 1], 5, 5, 3));
+  const pyramid1 = new Object3d(
+    engine.bufferManager.loadShape(createPyramid(10, 10, 7), [0, 0.66, 0, 1])
+  );
+  const pyramid2 = new Object3d(
+    engine.bufferManager.loadShape(createPyramid(10, 10, 7), [0.8, 0.8, 0, 1])
+  );
+  const pyramid3 = new Object3d(
+    engine.bufferManager.loadShape(createPyramid(5, 5, 3), [1, 0, 0.5, 1])
+  );
 
   pyramid2.rotation.x = Math.PI;
 

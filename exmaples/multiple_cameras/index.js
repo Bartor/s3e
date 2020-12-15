@@ -4,9 +4,13 @@ function main() {
   const canvas = document.getElementById("example");
 
   const engine = new S3e(canvas);
-  const cubeObject = new Object3d(createCuboid([0, 0.44, 1, 1], 20));
+  const cubeObject = new Object3d(
+    engine.bufferManager.loadShape(createCuboid(20), [0, 0.44, 1, 1])
+  );
 
-  const pyramid = new Object3d(createPyramid([1, 0.33, 0, 1], 20, 20, 20));
+  const pyramid = new Object3d(
+    engine.bufferManager.loadShape(createPyramid(20, 20, 20), [1, 0.33, 0, 1])
+  );
   pyramid.position = { x: 20, y: -20, z: -20 };
 
   engine.currentScene.addChild(cubeObject);
@@ -54,13 +58,17 @@ function main() {
 
   document.getElementById("camera-one").addEventListener("click", () => {
     engine.currentScene.currentCamera = cameraOne;
+
+    console.log(pyramid, cubeObject);
   });
 
   document.getElementById("camera-two").addEventListener("click", () => {
     engine.currentScene.currentCamera = cameraTwo;
+    console.log(pyramid, cubeObject);
   });
 
   document.getElementById("camera-three").addEventListener("click", () => {
     engine.currentScene.currentCamera = cameraThree;
+    console.log(pyramid, cubeObject);
   });
 }

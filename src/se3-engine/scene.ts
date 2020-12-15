@@ -3,6 +3,7 @@ import { Vec3 } from "./../3d/model";
 import { Camera } from "../objects/camera";
 import { Object3d } from "../objects/object3d.class";
 import { SceneObject } from "./model";
+import { S3e } from "./engine";
 
 class Scene extends Object3d {
   public elements: SceneObject[] = [];
@@ -12,7 +13,7 @@ class Scene extends Object3d {
   public ambientLightLevel: number = 0.5;
   private _lightDirection: Vec3 = normalize([-0.5, 0.2, 0.8]);
 
-  constructor(private gl: WebGLRenderingContext, camera: Camera) {
+  constructor(private engine: S3e, camera: Camera) {
     super();
 
     this.addChild(camera);
@@ -42,38 +43,22 @@ class Scene extends Object3d {
 
     child.scene = this;
 
-    const positionsBuffer = this.gl.createBuffer();
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionsBuffer);
-    this.gl.bufferData(
-      this.gl.ARRAY_BUFFER,
-      child.representation.pointsArray,
-      this.gl.STATIC_DRAW
-    );
-
-    const normalsBuffer = this.gl.createBuffer();
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, normalsBuffer);
-    this.gl.bufferData(
-      this.gl.ARRAY_BUFFER,
-      child.representation.normalsArray,
-      this.gl.STATIC_DRAW
-    );
-
-    const colorsBuffer = this.gl.createBuffer();
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, colorsBuffer);
-    this.gl.bufferData(
-      this.gl.ARRAY_BUFFER,
-      child.representation.colorsArray,
-      this.gl.STATIC_DRAW
-    );
-
     this.elements.push({
       drawable: !(child instanceof Camera),
-      positionsBuffer,
-      normalsBuffer,
-      colorsBuffer,
       object: child,
     });
 
+    /**
+     * Sort scene elements by their position buffers hashes
+     * Can be later improved to take normal and color buffers
+     * into consideration as well
+     */
+    this.elements = this.elements.sort((a, b) =>
+      a.object.bufferData.positions?.hash
+        .toString()
+        .localeCompare(b.object.bufferData.positions?.hash.toString())
+    );
+    
     for (const childChild of child.children) {
       this.connectScene(childChild);
     }
@@ -83,8 +68,14 @@ class Scene extends Object3d {
     const idx = this.elements.findIndex((element) => element.object === child);
 
     if (idx !== -1) {
-      this.gl.deleteBuffer(this.elements[idx].positionsBuffer);
+      this.engine.bufferManager.unregisterBuffers(
+        this.elements[idx].object.bufferData
+      );
       this.elements.splice(idx, 1);
+
+      for (const childChild of child.children) {
+        this.disconnectScene(childChild);
+      }
     }
   }
 

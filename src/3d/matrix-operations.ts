@@ -1,6 +1,16 @@
-import { Position3d } from "./../objects/model";
 import { Vec3 } from "./model";
 import { Mat4 } from "./model";
+
+export const copy = (
+  source: Mat4,
+  destination: Mat4 = new Float32Array(16)
+) => {
+  for (let i = 0; i < 16; i++) {
+    destination[i] = source[i];
+  }
+
+  return destination;
+};
 
 export const identity = (destination: Mat4 = new Float32Array(16)): Mat4 => {
   destination[0] = 1;

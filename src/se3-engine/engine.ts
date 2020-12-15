@@ -1,11 +1,12 @@
-import { identity, multiply } from "./../3d/matrix-operations";
+import { identity, multiply, scale } from "./../3d/matrix-operations";
 import { DataUpdateCall } from "./../data-bindings/model";
 import { BindingsManager } from "../data-bindings/bindings-manager.class";
 import { Camera } from "../objects/camera";
 import { Scene } from "./scene";
 import { getS3eDefaultConfiguration } from "./default-config";
-import { S3eConfiguration } from "./model";
+import { Hash, S3eConfiguration } from "./model";
 import { Mat4, Vec3 } from "../3d/model";
+import { BufferManager } from "./buffer-manager";
 
 class S3e {
   private worldView: Mat4 = identity();
@@ -24,12 +25,16 @@ class S3e {
   public gl: WebGLRenderingContext;
   public currentScene: Scene;
 
+  public bufferManager;
+
   constructor(
     private canvasElement: HTMLCanvasElement,
     config?: S3eConfiguration
   ) {
     this.gl = canvasElement.getContext("webgl");
     this.updateCanvasSize();
+
+    this.bufferManager = new BufferManager(this.gl);
 
     this.config = config ?? getS3eDefaultConfiguration(this.gl);
     this.bindingsManager = new BindingsManager(
@@ -66,7 +71,7 @@ class S3e {
     ].call;
 
     this.currentScene = new Scene(
-      this.gl,
+      this,
       new Camera({
         viewAngle: Math.PI / 4,
         near: 1,
@@ -96,16 +101,51 @@ class S3e {
     // tslint:disable-next-line: no-bitwise
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
-    for (const element of this.currentScene.elements) {
-      multiply(
-        this.currentScene.currentCamera.viewProjection,
-        element.object.absoluteMatrix,
-        this.worldView
-      );
+    const hashes = {
+      positions: null as Hash,
+      normals: null as Hash,
+      colors: null as Hash,
+    };
 
-      this.positionUpdateCall(element.positionsBuffer);
-      this.normalsUpdateCall(element.normalsBuffer);
-      this.colorsUpdateCall(element.colorsBuffer);
+    for (const element of this.currentScene.elements) {
+      if (element.drawable === false) continue;
+
+      if (element.object.bufferData.positions.hash !== hashes.positions) {
+        this.positionUpdateCall(element.object.bufferData.positions.buffer);
+        hashes.positions = element.object.bufferData.positions.hash;
+      }
+
+      if (element.object.bufferData.normals.hash !== hashes.normals) {
+        this.normalsUpdateCall(element.object.bufferData.normals.buffer);
+        hashes.normals = element.object.bufferData.normals.hash;
+      }
+
+      if (element.object.bufferData.colors.hash !== hashes.colors) {
+        this.colorsUpdateCall(element.object.bufferData.colors.buffer);
+        hashes.colors = element.object.bufferData.colors.hash;
+      }
+
+      if (element.object.bufferData.defaultScale !== undefined) {
+        scale(
+          element.object.absoluteMatrix,
+          element.object.bufferData.defaultScale.x,
+          element.object.bufferData.defaultScale.y,
+          element.object.bufferData.defaultScale.z,
+          this.worldView
+        );
+
+        multiply(
+          this.currentScene.currentCamera.viewProjection,
+          this.worldView,
+          this.worldView
+        );
+      } else {
+        multiply(
+          this.currentScene.currentCamera.viewProjection,
+          element.object.absoluteMatrix,
+          this.worldView
+        );
+      }
 
       this.worldViewUpdateCall(this.worldView);
 
@@ -117,8 +157,8 @@ class S3e {
       this.gl.drawArrays(
         this.gl.TRIANGLES,
         0,
-        element.object.representation.pointsArray.length /
-          element.object.representation.pointsPerFace
+        element.object.bufferData.positions.length /
+          element.object.bufferData.positions.itemsPerVertex
       );
     }
 
