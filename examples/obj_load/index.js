@@ -28,7 +28,7 @@ function main() {
       return object;
     });
 
-    engine.currentScene.currentCamera.position.y = 20;
+    engine.currentScene.currentCamera.position.z = 300;
 
     function draw(t) {
       requestAnimationFrame(draw);
