@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "build:prod": "webpack --mode=production",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "examples": "webpack --mode=production && npx http-server -s -o /examples"
   },
   "author": "Bartosz Barnaba Rajczyk",
   "license": "ISC",
@@ -14,6 +14,7 @@
     "@assemblyscript/loader": "^0.15.0",
     "@types/es6-promise": "^3.3.0",
     "@types/gulp": "^4.0.7",
+    "http-server": "^0.12.3",
     "ts-loader": "^8.0.4",
     "ts-node": "^9.0.0",
     "tslint": "^6.1.3",
