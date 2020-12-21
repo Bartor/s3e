@@ -164,6 +164,14 @@ class BufferManager {
     return data;
   }
 
+  public cloneBuffers(data: BufferData): BufferData {
+    this.positionsBuffers[data.positions.hash].instances++;
+    this.normalsBuffers[data.normals.hash].instances++;
+    this.colorsBuffers[data.colors.hash].instances++;
+
+    return { ...data };
+  }
+
   public unregisterBuffers(data: BufferData): void {
     const checkAndUnregister = (map: BufferMap, hash: Hash) => {
       if (map[hash] !== undefined) {
