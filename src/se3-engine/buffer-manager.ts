@@ -1,4 +1,4 @@
-import { identity } from "../3d/matrix-operations";
+import { UNIVERSAL_MASK } from "../shaders/features";
 import { BufferData, BufferInfo, Hash, ShapeDefinition } from "./model";
 import { createNormals } from "./representation/create-normals";
 import { loadObj } from "./representation/obj-loader";
@@ -86,7 +86,7 @@ class BufferManager {
   public loadObj(objFileContents: string, color: number[]): BufferData {
     const hash = hashString(objFileContents);
 
-    const data: BufferData = {} as BufferData;
+    const data: BufferData = { featuresMask: UNIVERSAL_MASK } as BufferData;
 
     if (
       this.positionsBuffers[hash] !== undefined &&
@@ -126,6 +126,7 @@ class BufferManager {
   public loadShape(shape: ShapeDefinition, color: number[]) {
     const data: BufferData = {
       defaultScale: shape.defaultScale,
+      featuresMask: UNIVERSAL_MASK,
     } as BufferData;
 
     if (

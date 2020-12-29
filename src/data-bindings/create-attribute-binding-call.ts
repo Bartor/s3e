@@ -1,4 +1,5 @@
-import { DataSignature, DataUpdateCall } from "./model";
+import { CompiledParameterDescriptor } from "../shaders/model";
+import { DataUpdateCall } from "./model";
 
 const typeMappings: Record<string, { size: number }> = {
   float: { size: 1 },
@@ -11,25 +12,25 @@ const typeMappings: Record<string, { size: number }> = {
 };
 
 const createAttributeUpdateCall = (
-  signature: DataSignature,
   gl: WebGLRenderingContext,
+  parameter: CompiledParameterDescriptor<number>,
   customSize?: number,
   normalize = false,
   stride = 0,
   offset = 0
 ): DataUpdateCall<WebGLBuffer> => {
-  const mapping = typeMappings[signature.type];
+  const mapping = typeMappings[parameter.type];
 
   if (mapping === undefined)
-    throw new Error(`Cannot create a binding call for ${signature.type} type`);
+    throw new Error(`Cannot create a binding call for ${parameter.type} type`);
 
   const size = customSize ?? mapping.size;
 
   return (newValue) => {
-    gl.enableVertexAttribArray(signature.location as number);
+    gl.enableVertexAttribArray(parameter.location);
     gl.bindBuffer(gl.ARRAY_BUFFER, newValue);
     gl.vertexAttribPointer(
-      signature.location as number,
+      parameter.location,
       size,
       gl.FLOAT,
       normalize,

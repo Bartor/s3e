@@ -1,24 +1,58 @@
 import { compileShader } from "../compile-shader";
+import { FEATURES, UNIVERSAL_MASK } from "../features";
+import { ShaderPart } from "../model";
 
-const shaderProgram = `
-attribute vec4 a_position;
-attribute vec3 a_normal;
-attribute vec4 a_color;
+const shaderParts: ShaderPart[] = [
+  {
+    featureMask: UNIVERSAL_MASK,
+    sourceCode: "attribute vec4 a_position;uniform mat4 u_worldView;",
+  },
+  {
+    featureMask: FEATURES.DIFFUSE_LIGHTING,
+    sourceCode: "attribute vec3 a_normal;",
+  },
+  {
+    featureMask: FEATURES.COLOR,
+    sourceCode: "attribute vec4 a_color;",
+  },
+  {
+    featureMask: FEATURES.DIFFUSE_LIGHTING,
+    sourceCode: "uniform mat4 u_normal;",
+  },
+  {
+    featureMask: FEATURES.AMBIENT_LIGHTING,
+    sourceCode: "varying vec3 v_normal;",
+  },
+  {
+    featureMask: FEATURES.COLOR,
+    sourceCode: "varying vec4 v_color;",
+  },
+  {
+    featureMask: UNIVERSAL_MASK,
+    sourceCode: "void main() { gl_Position = u_worldView * a_position;",
+  },
+  {
+    featureMask: FEATURES.DIFFUSE_LIGHTING,
+    sourceCode: "v_normal = mat3(u_normal) * a_normal;",
+  },
+  {
+    featureMask: FEATURES.COLOR,
+    sourceCode: "v_color = a_color;",
+  },
+  {
+    featureMask: UNIVERSAL_MASK,
+    sourceCode: "}",
+  },
+];
 
-uniform mat4 u_worldView;
-uniform mat4 u_normal;
-
-varying vec3 v_normal;
-varying vec4 v_color;
-
-void main() {
-    gl_Position = u_worldView * a_position;
-    v_normal = mat3(u_normal) * a_normal;
-    v_color = a_color;
-}
-`;
-
-const getVertexShader = (gl: WebGLRenderingContext) =>
-  compileShader(gl, gl.VERTEX_SHADER, shaderProgram);
+const getVertexShader = (gl: WebGLRenderingContext, featuresMask: number) =>
+  compileShader(
+    gl,
+    gl.VERTEX_SHADER,
+    shaderParts
+      .filter((part) => (part.featureMask & featuresMask) !== 0)
+      .map((part) => part.sourceCode)
+      .join("\n")
+  );
 
 export { getVertexShader };

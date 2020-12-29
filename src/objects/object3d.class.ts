@@ -6,6 +6,7 @@ import { Mat4 } from "../3d/model";
 import { Position3d, Rotation3d, Scale3d } from "./model";
 import { Scene } from "../se3-engine/scene";
 import { BufferData } from "../se3-engine/model";
+import { FEATURES } from "../shaders/features";
 
 class Object3d {
   constructor(
@@ -14,6 +15,8 @@ class Object3d {
       positions: undefined,
       normals: undefined,
       colors: undefined,
+      featuresMask:
+        FEATURES.AMBIENT_LIGHTING | FEATURES.COLOR | FEATURES.DIFFUSE_LIGHTING,
     }
   ) {}
 
@@ -125,8 +128,6 @@ class Object3d {
 
   private rotationGetters: Rotation3d = createGetters(this, this._rot);
 
-  private scaleGetters: Scale3d = createGetters(this, this._sca);
-
   public get scale() {
     return this.scaleGetters;
   }
@@ -136,6 +137,8 @@ class Object3d {
     this.scale.y = newScale.y ?? this.scale.y;
     this.scale.z = newScale.z ?? this.scale.z;
   }
+
+  private scaleGetters: Scale3d = createGetters(this, this._sca);
 }
 
 export { Object3d };

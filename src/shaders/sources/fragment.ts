@@ -1,24 +1,70 @@
 import { compileShader } from "../compile-shader";
+import { FEATURES, UNIVERSAL_MASK } from "../features";
+import { ShaderPart } from "../model";
 
-const shaderProgram = `
-precision mediump float;
+const shaderParts: ShaderPart[] = [
+  {
+    featureMask: UNIVERSAL_MASK,
+    sourceCode: "precision mediump float;",
+  },
+  {
+    featureMask: FEATURES.COLOR,
+    sourceCode: "varying vec4 v_color;",
+  },
+  {
+    featureMask: FEATURES.AMBIENT_LIGHTING,
+    sourceCode: "uniform float u_ambient;",
+  },
+  {
+    featureMask: FEATURES.DIFFUSE_LIGHTING,
+    sourceCode: "uniform vec3 u_reverseLightDirection;varying vec3 v_normal;",
+  },
+  {
+    featureMask: UNIVERSAL_MASK,
+    sourceCode: "void main() {",
+  },
+  {
+    featureMask: FEATURES.DIFFUSE_LIGHTING | FEATURES.AMBIENT_LIGHTING,
+    sourceCode: "float light = 0.0;",
+  },
+  {
+    featureMask: FEATURES.DIFFUSE_LIGHTING,
+    sourceCode: "light += dot(normalize(v_normal), u_reverseLightDirection);",
+  },
+  {
+    featureMask: FEATURES.AMBIENT_LIGHTING,
+    sourceCode: "light += u_ambient;",
+  },
+  {
+    featureMask: FEATURES.DIFFUSE_LIGHTING,
+    sourceCode: "light = min(light, 1.5);",
+  },
+  {
+    featureMask: FEATURES.AMBIENT_LIGHTING,
+    sourceCode: "light = max(light, u_ambient);",
+  },
+  {
+    featureMask: FEATURES.COLOR,
+    sourceCode: "gl_FragColor = v_color;",
+  },
+  {
+    featureMask: FEATURES.AMBIENT_LIGHTING | FEATURES.DIFFUSE_LIGHTING,
+    sourceCode: "gl_FragColor.rgb *= light;",
+  },
+  {
+    featureMask: UNIVERSAL_MASK,
+    sourceCode: "}",
+  },
+];
 
-uniform vec3 u_reverseLightDirection;
-uniform float u_ambient;
-
-varying vec3 v_normal;
-varying vec4 v_color;
-
-void main() {
-    vec3 normal = normalize(v_normal);
-    float light = dot(normal, u_reverseLightDirection);
-
-    gl_FragColor = v_color;
-    gl_FragColor.rgb *= max(min(light + u_ambient, 1.5), u_ambient);
-}
-`;
-
-const getFragmentShader = (gl: WebGLRenderingContext) =>
-  compileShader(gl, gl.FRAGMENT_SHADER, shaderProgram);
+const getFragmentShader = (gl: WebGLRenderingContext, featuresMask: number) =>
+  compileShader(
+    gl,
+    gl.FRAGMENT_SHADER,
+    shaderParts
+      .filter((part) => (part.featureMask & featuresMask) !== 0)
+      .map((part) => part.sourceCode)
+      .join("\n")
+  );
 
 export { getFragmentShader };

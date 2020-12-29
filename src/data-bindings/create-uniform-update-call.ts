@@ -1,4 +1,5 @@
-import { DataSignature, DataUpdateCall } from "./model";
+import { CompiledParameterDescriptor } from "../shaders/model";
+import { DataUpdateCall } from "./model";
 
 const typeMappings: Record<
   string,
@@ -14,18 +15,18 @@ const typeMappings: Record<
 };
 
 const createUniformUpdateCall = (
-  signature: DataSignature,
-  gl: any
-): DataUpdateCall<number | Float32Array> => {
-  const mapping = typeMappings[signature.type];
+  gl: any,
+  parameter: CompiledParameterDescriptor<WebGLUniformLocation>
+): DataUpdateCall<number | number[] | Float32Array> => {
+  const mapping = typeMappings[parameter.type];
 
   if (mapping === undefined)
-    throw new Error(`Cannot create a binding call for ${signature.type} type`);
+    throw new Error(`Cannot create a binding call for ${parameter.type} type`);
 
   return mapping.matrixType
     ? (newValue, inverse = false) =>
-        gl[mapping.functionName](signature.location, inverse, newValue)
-    : (newValue) => gl[mapping.functionName](signature.location, newValue);
+        gl[mapping.functionName](parameter.location, inverse, newValue)
+    : (newValue) => gl[mapping.functionName](parameter.location, newValue);
 };
 
 export { createUniformUpdateCall };
