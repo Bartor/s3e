@@ -5,12 +5,12 @@ function main() {
 
   const engine = new S3e(canvas);
   const cubeObject = new Object3d(
-    engine.bufferManager.loadShape(createCuboid(20), [0, 0.44, 1, 1])
+    engine.bufferManager.loadShape(createCuboid(20), { color: [0, 0.44, 1, 1] })
   );
 
   engine.currentScene.addChild(cubeObject);
 
-  engine.currentScene.ambientLightLevel = 0.8;
+  engine.currentScene.ambientLightLevel = 0.5;
   engine.currentScene.currentCamera.position.z = 100;
 
   const position = getPositionTimeline(cubeObject, 60);

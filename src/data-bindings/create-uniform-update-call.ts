@@ -3,15 +3,16 @@ import { DataUpdateCall } from "./model";
 
 const typeMappings: Record<
   string,
-  { functionName: string; matrixType: boolean }
+  { functionName: string; args?: number; matrixType?: boolean }
 > = {
-  float: { functionName: "uniform1f", matrixType: false },
-  vec2: { functionName: "uniform2fv", matrixType: false },
-  vec3: { functionName: "uniform3fv", matrixType: false },
-  vec4: { functionName: "uniform4fv", matrixType: false },
+  float: { functionName: "uniform1f" },
+  vec2: { functionName: "uniform2fv" },
+  vec3: { functionName: "uniform3fv" },
+  vec4: { functionName: "uniform4fv" },
   mat2: { functionName: "uniformMatrix2fv", matrixType: true },
   mat3: { functionName: "uniformMatrix3fv", matrixType: true },
   mat4: { functionName: "uniformMatrix4fv", matrixType: true },
+  sampler2D: { functionName: "uniform1i" },
 };
 
 const createUniformUpdateCall = (
@@ -23,7 +24,7 @@ const createUniformUpdateCall = (
   if (mapping === undefined)
     throw new Error(`Cannot create a binding call for ${parameter.type} type`);
 
-  return mapping.matrixType
+  return mapping.matrixType ?? false
     ? (newValue, inverse = false) =>
         gl[mapping.functionName](parameter.location, inverse, newValue)
     : (newValue) => gl[mapping.functionName](parameter.location, newValue);

@@ -16,16 +16,24 @@ const shaderParts: ShaderPart[] = [
     sourceCode: "attribute vec4 a_color;",
   },
   {
+    featureMask: FEATURES.TEXTURES,
+    sourceCode: "attribute vec2 a_uv;",
+  },
+  {
     featureMask: FEATURES.DIFFUSE_LIGHTING,
     sourceCode: "uniform mat4 u_normal;",
   },
   {
-    featureMask: FEATURES.AMBIENT_LIGHTING,
+    featureMask: FEATURES.DIFFUSE_LIGHTING,
     sourceCode: "varying vec3 v_normal;",
   },
   {
     featureMask: FEATURES.COLOR,
     sourceCode: "varying vec4 v_color;",
+  },
+  {
+    featureMask: FEATURES.TEXTURES,
+    sourceCode: "varying vec2 v_uv;",
   },
   {
     featureMask: UNIVERSAL_MASK,
@@ -38,6 +46,10 @@ const shaderParts: ShaderPart[] = [
   {
     featureMask: FEATURES.COLOR,
     sourceCode: "v_color = a_color;",
+  },
+  {
+    featureMask: FEATURES.TEXTURES,
+    sourceCode: "v_uv = a_uv;",
   },
   {
     featureMask: UNIVERSAL_MASK,

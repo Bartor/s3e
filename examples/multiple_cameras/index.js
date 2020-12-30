@@ -5,11 +5,13 @@ function main() {
 
   const engine = new S3e(canvas);
   const cubeObject = new Object3d(
-    engine.bufferManager.loadShape(createCuboid(20), [0, 0.44, 1, 1])
+    engine.bufferManager.loadShape(createCuboid(20), { color: [0, 0.44, 1, 1] })
   );
 
   const pyramid = new Object3d(
-    engine.bufferManager.loadShape(createPyramid(20, 20, 20), [1, 0.33, 0, 1])
+    engine.bufferManager.loadShape(createPyramid(20, 20, 20), {
+      color: [1, 0.33, 0, 1],
+    })
   );
   pyramid.position = { x: 20, y: -20, z: -20 };
 

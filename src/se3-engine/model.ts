@@ -11,11 +11,24 @@ export type Hash = string | number;
 
 export type Hashes = Record<string, Hash>;
 
+export interface LoadOptions {
+  color?: number[];
+  texture?: {
+    source: string;
+    uvs?: number[];
+  };
+}
+
 export interface BufferInfo {
   buffer: WebGLBuffer;
   hash: Hash;
   itemsPerVertex: number;
   length: number;
+}
+
+export interface TextureInfo {
+  texture: WebGLTexture;
+  name: string;
 }
 
 export interface BufferData {
@@ -27,6 +40,7 @@ export interface ObjectRepresentation {
   bufferData: BufferData;
   defaultScale?: Scale3d;
   featuresMask: number;
+  texture?: TextureInfo;
 }
 
 export interface ShapeDefinition {

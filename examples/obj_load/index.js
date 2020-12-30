@@ -12,7 +12,7 @@ async function main() {
   const text = await fetch("LunarLander.obj").then(async (data) => data.text());
 
   const original = new Object3d(
-    engine.bufferManager.loadObj(text, [0, 0.44, 1, 1])
+    engine.bufferManager.loadObj(text, { color: [0, 0.44, 1, 1] })
   );
 
   const objects = Array.from({ length: GRID_SIZE ** 2 }).map((_, i) => {

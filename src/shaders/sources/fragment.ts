@@ -12,12 +12,20 @@ const shaderParts: ShaderPart[] = [
     sourceCode: "varying vec4 v_color;",
   },
   {
+    featureMask: FEATURES.TEXTURES,
+    sourceCode: "varying vec2 v_uv;",
+  },
+  {
     featureMask: FEATURES.AMBIENT_LIGHTING,
     sourceCode: "uniform float u_ambient;",
   },
   {
     featureMask: FEATURES.DIFFUSE_LIGHTING,
     sourceCode: "uniform vec3 u_reverseLightDirection;varying vec3 v_normal;",
+  },
+  {
+    featureMask: FEATURES.TEXTURES,
+    sourceCode: "uniform sampler2D u_texture;",
   },
   {
     featureMask: UNIVERSAL_MASK,
@@ -46,6 +54,10 @@ const shaderParts: ShaderPart[] = [
   {
     featureMask: FEATURES.COLOR,
     sourceCode: "gl_FragColor = v_color;",
+  },
+  {
+    featureMask: FEATURES.TEXTURES,
+    sourceCode: "gl_FragColor = texture2D(u_texture, v_uv);",
   },
   {
     featureMask: FEATURES.AMBIENT_LIGHTING | FEATURES.DIFFUSE_LIGHTING,

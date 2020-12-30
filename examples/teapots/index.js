@@ -15,7 +15,7 @@ async function main() {
   );
 
   const original = new Object3d(
-    engine.bufferManager.loadObj(teapotContents, [0.9, 0.9, 0.9, 1])
+    engine.bufferManager.loadObj(teapotContents, { color: [0.9, 0.9, 0.9, 1] })
   );
 
   const teapots = Array.from({ length: TEAPOTS }).map((_) => {

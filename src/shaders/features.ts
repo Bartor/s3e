@@ -6,6 +6,7 @@ const FEATURES = {
   COLOR: 1 << 0,
   AMBIENT_LIGHTING: 1 << 1,
   DIFFUSE_LIGHTING: 1 << 2,
+  TEXTURES: 1 << 3,
 };
 
 const UNIVERSAL_MASK = Object.values(FEATURES).reduce((acc, e) => acc | e, 0);
@@ -30,11 +31,13 @@ const FEATURES_PARAMETERS: FeatureParameters[] = [
         (state) => {
           if (
             state.hashes.position !==
-            state.renderedObject.bufferData.positions.hash
+            state.renderedObject.representation.bufferData.positions.hash
           ) {
-            positionCall(state.renderedObject.bufferData.positions.buffer);
+            positionCall(
+              state.renderedObject.representation.bufferData.positions.buffer
+            );
             state.hashes.position =
-              state.renderedObject.bufferData.positions.hash;
+              state.renderedObject.representation.bufferData.positions.hash;
           }
         },
         (state) => worldViewCall(state.engine.worldView),
@@ -53,10 +56,12 @@ const FEATURES_PARAMETERS: FeatureParameters[] = [
       return [
         (state) => {
           if (
-            state.hashes.color !== state.renderedObject.bufferData.colors.hash
+            state.hashes.color !==
+            state.renderedObject.representation.bufferData.colors.hash
           ) {
-            call(state.renderedObject.bufferData.colors.buffer);
-            state.hashes.color = state.renderedObject.bufferData.colors.hash;
+            call(state.renderedObject.representation.bufferData.colors.buffer);
+            state.hashes.color =
+              state.renderedObject.representation.bufferData.colors.hash;
           }
         },
       ];
@@ -101,13 +106,59 @@ const FEATURES_PARAMETERS: FeatureParameters[] = [
         (state) => {
           if (
             state.hashes.normals !==
-            state.renderedObject.bufferData.normals.hash
+            state.renderedObject.representation.bufferData.normals.hash
           ) {
-            normalAttribCall(state.renderedObject.bufferData.normals.buffer);
+            normalAttribCall(
+              state.renderedObject.representation.bufferData.normals.buffer
+            );
+            state.hashes.normals =
+              state.renderedObject.representation.bufferData.normals.hash;
           }
         },
         (state) => normalUniformCall(state.renderedObject.normalMatrix),
         (state) => lightUniformCall(state.engine.currentScene.lightDirection),
+      ];
+    },
+  },
+  {
+    featureMask: FEATURES.TEXTURES,
+    createFeatureCalls: (gl, program) => {
+      const uvAttribLocation = gl.getAttribLocation(program, "a_uv");
+      const textureUniformLocation = gl.getUniformLocation(
+        program,
+        "u_texture"
+      );
+
+      const uvAttribCall = createAttributeUpdateCall(gl, {
+        type: "vec2",
+        location: uvAttribLocation,
+      });
+      const textureUniformCall = createUniformUpdateCall(gl, {
+        type: "sampler2D",
+        location: textureUniformLocation,
+      });
+
+      return [
+        (state) => {
+          if (
+            state.hashes.uvs !==
+            state.renderedObject.representation.bufferData.uvs.hash
+          ) {
+            uvAttribCall(
+              state.renderedObject.representation.bufferData.uvs.buffer
+            );
+            state.hashes.uvs =
+              state.renderedObject.representation.bufferData.uvs.hash;
+          }
+        },
+        (state) => {
+          gl.activeTexture(gl.TEXTURE0);
+          gl.bindTexture(
+            gl.TEXTURE_2D,
+            state.renderedObject.representation.texture.texture
+          );
+          textureUniformCall(0);
+        },
       ];
     },
   },

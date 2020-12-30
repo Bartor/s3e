@@ -27,7 +27,6 @@ const createAttributeUpdateCall = (
   const size = customSize ?? mapping.size;
 
   return (newValue) => {
-    gl.enableVertexAttribArray(parameter.location);
     gl.bindBuffer(gl.ARRAY_BUFFER, newValue);
     gl.vertexAttribPointer(
       parameter.location,
@@ -37,6 +36,7 @@ const createAttributeUpdateCall = (
       stride,
       offset
     );
+    gl.enableVertexAttribArray(parameter.location);
   };
 };
 

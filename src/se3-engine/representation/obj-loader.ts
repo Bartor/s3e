@@ -3,12 +3,14 @@ import { createNormals } from "./create-normals";
 interface ParsingState {
   vertices: number[][];
   normals: number[][];
+  uvs: number[][];
   positionsArray: number[];
   normalsArray: number[];
+  uvsArray: number[];
 }
 
 const parseVertex = (vertexInformation: string, state: ParsingState) => {
-  const [vertex, _, normal] = vertexInformation
+  const [vertex, uv, normal] = vertexInformation
     .split("/")
     .map((value) => Number.parseInt(value, 10) - 1);
 
@@ -16,6 +18,10 @@ const parseVertex = (vertexInformation: string, state: ParsingState) => {
 
   if (!isNaN(normal)) {
     state.normalsArray.push(...state.normals[normal]);
+  }
+
+  if (!isNaN(uv)) {
+    state.uvsArray.push(...state.uvs[uv]);
   }
 };
 
@@ -29,6 +35,8 @@ const parsePart = (part: string[], state: ParsingState) => {
     case "vn":
       state.normals.push(args.map(Number.parseFloat));
       break;
+    case "vt":
+      state.uvs.push(args.map(Number.parseFloat));
     case "f":
       for (let i = 0; i < args.length - 2; i++) {
         parseVertex(args[0], state);
@@ -45,8 +53,10 @@ export const loadObj = (objFileContents: string) => {
   const state: ParsingState = {
     vertices: [],
     normals: [],
+    uvs: [],
     normalsArray: [],
     positionsArray: [],
+    uvsArray: [],
   };
 
   objFileContents
@@ -60,5 +70,6 @@ export const loadObj = (objFileContents: string) => {
       state.normalsArray.length > 0
         ? new Float32Array(state.normalsArray)
         : createNormals(state.positionsArray),
+    uvs: state.uvsArray.length > 0 ? new Float32Array(state.uvsArray) : undefined,
   };
 };

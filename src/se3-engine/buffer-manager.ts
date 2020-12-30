@@ -1,10 +1,12 @@
-import { FEATURES, UNIVERSAL_MASK } from "../shaders/features";
+import { FEATURES } from "../shaders/features";
 import {
   BufferData,
   BufferInfo,
   Hash,
+  LoadOptions,
   ObjectRepresentation,
   ShapeDefinition,
+  TextureInfo,
 } from "./model";
 import { createNormals } from "./representation/create-normals";
 import { loadObj } from "./representation/obj-loader";
@@ -26,9 +28,16 @@ const hashString = function (toHash: string, seed = 0) {
   return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 };
 
+const DEFAULT_GREY = [160, 160, 160, 255];
+
 interface BufferCounter {
   instances: number;
   bufferInfo: BufferInfo;
+}
+
+interface TextureCounter {
+  instances: number;
+  texture: TextureInfo;
 }
 
 type BufferMap = Record<Hash, BufferCounter | undefined>;
@@ -36,6 +45,7 @@ type BufferMap = Record<Hash, BufferCounter | undefined>;
 class BufferManager {
   private universalBuffersMap: Record<string, BufferMap | undefined> = {};
   private colorsBuffers: BufferMap = {};
+  private textures: Record<Hash, TextureCounter | undefined> = {};
 
   constructor(private gl: WebGLRenderingContext) {}
 
@@ -111,27 +121,78 @@ class BufferManager {
     }
   }
 
+  public loadTexture(imageSource: string): TextureInfo {
+    if (this.textures[imageSource] === undefined) {
+      const texture = this.gl.createTexture();
+      this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+      this.gl.texImage2D(
+        this.gl.TEXTURE_2D,
+        0,
+        this.gl.RGBA,
+        1,
+        1,
+        0,
+        this.gl.RGBA,
+        this.gl.UNSIGNED_BYTE,
+        // grey-ish
+        new Uint8Array(DEFAULT_GREY)
+      );
+
+      const image = new Image();
+      image.addEventListener("error", () =>
+        console.error(`Texture ${imageSource} couldn't be loaded`)
+      );
+      image.addEventListener("load", () => {
+        this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+        this.gl.texImage2D(
+          this.gl.TEXTURE_2D,
+          0,
+          this.gl.RGBA,
+          this.gl.RGBA,
+          this.gl.UNSIGNED_BYTE,
+          image
+        );
+        // this checks if the image's dimensions are powers of 2
+        if (
+          (image.height & (image.height - 1)) === 0 &&
+          (image.width & (image.width - 1)) === 0
+        ) {
+          this.gl.generateMipmap(this.gl.TEXTURE_2D);
+        }
+      });
+
+      image.src = imageSource;
+      return (this.textures[imageSource] = {
+        instances: 1,
+        texture: { texture, name: imageSource },
+      }).texture;
+    } else {
+      this.textures[imageSource].instances++;
+      return this.textures[imageSource].texture;
+    }
+  }
+
   public loadObj(
     objFileContents: string,
-    color: number[]
+    options?: LoadOptions
   ): ObjectRepresentation {
     const hash = hashString(objFileContents);
 
     let positions: Float32Array,
       normals: Float32Array,
+      uvs: Float32Array | undefined,
       resolved = false;
     const resolutionFn = () => {
       if (resolved) {
-        return { positions, normals };
+        return { positions, normals, uvs };
       } else {
-        ({ positions, normals } = loadObj(objFileContents));
-        return { positions, normals };
+        ({ positions, normals, uvs } = loadObj(objFileContents));
+        return { positions, normals, uvs };
       }
     };
 
     const representation: ObjectRepresentation = {
-      featuresMask:
-        FEATURES.AMBIENT_LIGHTING | FEATURES.COLOR | FEATURES.DIFFUSE_LIGHTING,
+      featuresMask: FEATURES.AMBIENT_LIGHTING | FEATURES.DIFFUSE_LIGHTING,
       bufferData: {
         positions: this.resolveUniversalBuffer(
           "positions",
@@ -145,21 +206,41 @@ class BufferManager {
           4,
           hash
         ).bufferInfo,
-        colors: this.resolveColorsBuffer(color, positions.length).bufferInfo,
       },
     };
+
+    if (options?.texture) {
+      representation.texture = this.loadTexture(options.texture.source);
+      representation.featuresMask |= FEATURES.TEXTURES;
+    } else if (options?.color) {
+      representation.bufferData.colors = this.resolveColorsBuffer(
+        options.color,
+        positions.length
+      ).bufferInfo;
+      representation.featuresMask |= FEATURES.COLOR;
+    }
+
+    // this is evaluated by now
+    if (options?.texture && uvs) {
+      representation.bufferData.uvs = this.resolveUniversalBuffer(
+        "uvs",
+        () =>
+          options.texture.uvs ? new Float32Array(options.texture.uvs) : uvs,
+        2,
+        hash
+      ).bufferInfo;
+    }
 
     return representation;
   }
 
   public loadShape(
     shape: ShapeDefinition,
-    color: number[]
+    options?: LoadOptions
   ): ObjectRepresentation {
     const representation: ObjectRepresentation = {
       defaultScale: shape.defaultScale,
-      featuresMask:
-        FEATURES.AMBIENT_LIGHTING | FEATURES.COLOR | FEATURES.DIFFUSE_LIGHTING,
+      featuresMask: FEATURES.AMBIENT_LIGHTING | FEATURES.DIFFUSE_LIGHTING,
       bufferData: {
         positions: this.resolveUniversalBuffer(
           "positions",
@@ -173,10 +254,26 @@ class BufferManager {
           4,
           shape.hash
         ).bufferInfo,
-        colors: this.resolveColorsBuffer(color, shape.positions.length)
-          .bufferInfo,
       },
     };
+
+    if (options?.texture && options.texture.uvs) {
+      representation.texture = this.loadTexture(options.texture.source);
+      representation.featuresMask |= FEATURES.TEXTURES;
+
+      representation.bufferData.uvs = this.resolveUniversalBuffer(
+        "uvs",
+        () => new Float32Array(options.texture.uvs),
+        2,
+        shape.hash
+      ).bufferInfo;
+    } else if (options?.color) {
+      representation.bufferData.colors = this.resolveColorsBuffer(
+        options.color,
+        shape.positions.length
+      ).bufferInfo;
+      representation.featuresMask |= FEATURES.COLOR;
+    }
 
     return representation;
   }

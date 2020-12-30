@@ -51,14 +51,12 @@ class S3e {
     const renderState: RenderState = {
       engine: this,
       renderedObject: null,
-      hashes: {
-        positions: null as Hash,
-        normals: null as Hash,
-        colors: null as Hash,
-      },
+      hashes: {},
     };
 
     for (const element of this.currentScene.elements) {
+      if (element.drawable === false) continue;
+
       const currentProgram = this.programManager.requestProgram(
         element.object.representation.featuresMask
       );
@@ -66,8 +64,6 @@ class S3e {
       this.gl.useProgram(currentProgram.program);
       this.gl.enable(this.gl.DEPTH_TEST);
       this.gl.enable(this.gl.CULL_FACE);
-
-      if (element.drawable === false) continue;
 
       renderState.renderedObject = element.object;
 
