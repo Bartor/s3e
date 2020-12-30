@@ -5,18 +5,18 @@ import { move, rotateX, rotateY, rotateZ } from "../3d/matrix-operations";
 import { Mat4 } from "../3d/model";
 import { Position3d, Rotation3d, Scale3d } from "./model";
 import { Scene } from "../se3-engine/scene";
-import { BufferData } from "../se3-engine/model";
+import { ObjectRepresentation } from "../se3-engine/model";
 import { FEATURES } from "../shaders/features";
 
 class Object3d {
   constructor(
-    public bufferData: BufferData = {
+    public representation: ObjectRepresentation = {
       defaultScale: { x: 1, y: 1, z: 1 },
-      positions: undefined,
-      normals: undefined,
-      colors: undefined,
       featuresMask:
         FEATURES.AMBIENT_LIGHTING | FEATURES.COLOR | FEATURES.DIFFUSE_LIGHTING,
+      bufferData: {
+        positions: undefined,
+      },
     }
   ) {}
 
@@ -55,12 +55,12 @@ class Object3d {
 
   public get normalMatrix() {
     if (this.changed || this.parent.changed) {
-      if (this.bufferData.defaultScale !== undefined) {
+      if (this.representation.defaultScale !== undefined) {
         scale(
           this.absoluteMatrix,
-          this.bufferData.defaultScale.x,
-          this.bufferData.defaultScale.y,
-          this.bufferData.defaultScale.z,
+          this.representation.defaultScale.x,
+          this.representation.defaultScale.y,
+          this.representation.defaultScale.z,
           this._norMat
         );
         invert(this._norMat, this._norMat);

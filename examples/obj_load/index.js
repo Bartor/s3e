@@ -17,7 +17,7 @@ async function main() {
 
   const objects = Array.from({ length: GRID_SIZE ** 2 }).map((_, i) => {
     const object = new Object3d(
-      engine.bufferManager.cloneBuffers(original.bufferData)
+      engine.bufferManager.cloneRepresentation(original.representation)
     );
 
     object.rotation.x = -Math.PI / 2;

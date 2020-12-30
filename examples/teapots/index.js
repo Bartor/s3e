@@ -20,7 +20,7 @@ async function main() {
 
   const teapots = Array.from({ length: TEAPOTS }).map((_) => {
     const object = new Object3d(
-      engine.bufferManager.cloneBuffers(original.bufferData)
+      engine.bufferManager.cloneRepresentation(original.representation)
     );
 
     const volume = 10 * TEAPOTS ** (1 / 3);

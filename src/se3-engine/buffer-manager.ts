@@ -1,5 +1,11 @@
-import { UNIVERSAL_MASK } from "../shaders/features";
-import { BufferData, BufferInfo, Hash, ShapeDefinition } from "./model";
+import { FEATURES, UNIVERSAL_MASK } from "../shaders/features";
+import {
+  BufferData,
+  BufferInfo,
+  Hash,
+  ObjectRepresentation,
+  ShapeDefinition,
+} from "./model";
 import { createNormals } from "./representation/create-normals";
 import { loadObj } from "./representation/obj-loader";
 
@@ -28,8 +34,7 @@ interface BufferCounter {
 type BufferMap = Record<Hash, BufferCounter | undefined>;
 
 class BufferManager {
-  private positionsBuffers: BufferMap = {};
-  private normalsBuffers: BufferMap = {};
+  private universalBuffersMap: Record<string, BufferMap | undefined> = {};
   private colorsBuffers: BufferMap = {};
 
   constructor(private gl: WebGLRenderingContext) {}
@@ -83,94 +88,112 @@ class BufferManager {
     }
   }
 
-  public loadObj(objFileContents: string, color: number[]): BufferData {
+  private resolveUniversalBuffer(
+    buffersType: string,
+    dataSource: () => Float32Array,
+    itemsPerVertex: number,
+    hash: Hash
+  ): BufferCounter {
+    if (this.universalBuffersMap[buffersType] === undefined) {
+      this.universalBuffersMap[buffersType] = {};
+    }
+
+    if (this.universalBuffersMap[buffersType][hash] !== undefined) {
+      this.universalBuffersMap[buffersType][hash].instances++;
+      return this.universalBuffersMap[buffersType][hash];
+    } else {
+      return this.bufferNewData(
+        dataSource(),
+        itemsPerVertex,
+        this.universalBuffersMap[buffersType],
+        hash
+      );
+    }
+  }
+
+  public loadObj(
+    objFileContents: string,
+    color: number[]
+  ): ObjectRepresentation {
     const hash = hashString(objFileContents);
 
-    const data: BufferData = { featuresMask: UNIVERSAL_MASK } as BufferData;
+    let positions: Float32Array,
+      normals: Float32Array,
+      resolved = false;
+    const resolutionFn = () => {
+      if (resolved) {
+        return { positions, normals };
+      } else {
+        ({ positions, normals } = loadObj(objFileContents));
+        return { positions, normals };
+      }
+    };
 
-    if (
-      this.positionsBuffers[hash] !== undefined &&
-      this.normalsBuffers[hash] !== undefined
-    ) {
-      this.positionsBuffers[hash].instances++;
-      this.normalsBuffers[hash].instances++;
+    const representation: ObjectRepresentation = {
+      featuresMask:
+        FEATURES.AMBIENT_LIGHTING | FEATURES.COLOR | FEATURES.DIFFUSE_LIGHTING,
+      bufferData: {
+        positions: this.resolveUniversalBuffer(
+          "positions",
+          () => resolutionFn().positions,
+          4,
+          hash
+        ).bufferInfo,
+        normals: this.resolveUniversalBuffer(
+          "normals",
+          () => resolutionFn().normals,
+          4,
+          hash
+        ).bufferInfo,
+        colors: this.resolveColorsBuffer(color, positions.length).bufferInfo,
+      },
+    };
 
-      data.positions = this.positionsBuffers[hash].bufferInfo;
-      data.normals = this.normalsBuffers[hash].bufferInfo;
-    } else {
-      const { positions, normals } = loadObj(objFileContents);
-
-      data.positions = this.bufferNewData(
-        positions,
-        4,
-        this.positionsBuffers,
-        hash
-      ).bufferInfo;
-
-      data.normals = this.bufferNewData(
-        normals,
-        4,
-        this.normalsBuffers,
-        hash
-      ).bufferInfo;
-    }
-
-    data.colors = this.resolveColorsBuffer(
-      color,
-      data.positions.length
-    ).bufferInfo;
-
-    return data;
+    return representation;
   }
 
-  public loadShape(shape: ShapeDefinition, color: number[]) {
-    const data: BufferData = {
+  public loadShape(
+    shape: ShapeDefinition,
+    color: number[]
+  ): ObjectRepresentation {
+    const representation: ObjectRepresentation = {
       defaultScale: shape.defaultScale,
-      featuresMask: UNIVERSAL_MASK,
-    } as BufferData;
+      featuresMask:
+        FEATURES.AMBIENT_LIGHTING | FEATURES.COLOR | FEATURES.DIFFUSE_LIGHTING,
+      bufferData: {
+        positions: this.resolveUniversalBuffer(
+          "positions",
+          () => new Float32Array(shape.positions),
+          4,
+          shape.hash
+        ).bufferInfo,
+        normals: this.resolveUniversalBuffer(
+          "normals",
+          () => createNormals(shape.positions),
+          4,
+          shape.hash
+        ).bufferInfo,
+        colors: this.resolveColorsBuffer(color, shape.positions.length)
+          .bufferInfo,
+      },
+    };
 
-    if (
-      this.positionsBuffers[shape.hash] !== undefined &&
-      this.normalsBuffers[shape.hash] !== undefined
-    ) {
-      this.positionsBuffers[shape.hash].instances++;
-      this.normalsBuffers[shape.hash].instances++;
-
-      data.positions = this.positionsBuffers[shape.hash].bufferInfo;
-      data.normals = this.normalsBuffers[shape.hash].bufferInfo;
-    } else {
-      const positions = new Float32Array(shape.positions);
-      const normals = createNormals(positions);
-
-      data.positions = this.bufferNewData(
-        positions,
-        4,
-        this.positionsBuffers,
-        shape.hash
-      ).bufferInfo;
-
-      data.normals = this.bufferNewData(
-        normals,
-        4,
-        this.normalsBuffers,
-        shape.hash
-      ).bufferInfo;
-    }
-
-    data.colors = this.resolveColorsBuffer(
-      color,
-      data.positions.length
-    ).bufferInfo;
-
-    return data;
+    return representation;
   }
 
-  public cloneBuffers(data: BufferData): BufferData {
-    this.positionsBuffers[data.positions.hash].instances++;
-    this.normalsBuffers[data.normals.hash].instances++;
-    this.colorsBuffers[data.colors.hash].instances++;
+  public cloneRepresentation(
+    representation: ObjectRepresentation
+  ): ObjectRepresentation {
+    Object.keys(representation.bufferData).forEach((key) => {
+      if (key === "colors") {
+        this.colorsBuffers[representation.bufferData.colors.hash].instances++;
+      } else {
+        this.universalBuffersMap[key][representation.bufferData[key].hash]
+          .instances++;
+      }
+    });
 
-    return { ...data };
+    return { ...representation, bufferData: { ...representation.bufferData } };
   }
 
   public unregisterBuffers(data: BufferData): void {
@@ -185,9 +208,13 @@ class BufferManager {
       }
     };
 
-    checkAndUnregister(this.positionsBuffers, data.positions.hash);
-    checkAndUnregister(this.normalsBuffers, data.normals.hash);
-    checkAndUnregister(this.colorsBuffers, data.colors.hash);
+    Object.keys(data).forEach((key) => {
+      if (key === "colors") {
+        checkAndUnregister(this.colorsBuffers, data[key].hash);
+      } else {
+        checkAndUnregister(this.universalBuffersMap[key], data[key].hash);
+      }
+    });
   }
 }
 

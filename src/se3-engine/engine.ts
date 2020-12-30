@@ -60,7 +60,7 @@ class S3e {
 
     for (const element of this.currentScene.elements) {
       const currentProgram = this.programManager.requestProgram(
-        element.object.bufferData.featuresMask
+        element.object.representation.featuresMask
       );
 
       this.gl.useProgram(currentProgram.program);
@@ -71,12 +71,12 @@ class S3e {
 
       renderState.renderedObject = element.object;
 
-      if (element.object.bufferData.defaultScale !== undefined) {
+      if (element.object.representation.defaultScale !== undefined) {
         scale(
           element.object.absoluteMatrix,
-          element.object.bufferData.defaultScale.x,
-          element.object.bufferData.defaultScale.y,
-          element.object.bufferData.defaultScale.z,
+          element.object.representation.defaultScale.x,
+          element.object.representation.defaultScale.y,
+          element.object.representation.defaultScale.z,
           this.worldView
         );
 
@@ -100,8 +100,8 @@ class S3e {
       this.gl.drawArrays(
         this.gl.TRIANGLES,
         0,
-        element.object.bufferData.positions.length /
-          element.object.bufferData.positions.itemsPerVertex
+        element.object.representation.bufferData.positions.length /
+          element.object.representation.bufferData.positions.itemsPerVertex
       );
     }
 

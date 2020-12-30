@@ -19,10 +19,13 @@ export interface BufferInfo {
 }
 
 export interface BufferData {
-  colors: BufferInfo;
-  defaultScale?: Scale3d;
-  normals: BufferInfo;
   positions: BufferInfo;
+  [bufferName: string]: BufferInfo;
+}
+
+export interface ObjectRepresentation {
+  bufferData: BufferData;
+  defaultScale?: Scale3d;
   featuresMask: number;
 }
 

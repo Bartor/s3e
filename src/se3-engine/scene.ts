@@ -54,9 +54,11 @@ class Scene extends Object3d {
      * into consideration as well
      */
     this.elements = this.elements.sort((a, b) =>
-      a.object.bufferData.positions?.hash
+      a.object.representation.bufferData.positions?.hash
         .toString()
-        .localeCompare(b.object.bufferData.positions?.hash.toString())
+        .localeCompare(
+          b.object.representation.bufferData.positions?.hash.toString()
+        )
     );
 
     for (const childChild of child.children) {
@@ -69,7 +71,7 @@ class Scene extends Object3d {
 
     if (idx !== -1) {
       this.engine.bufferManager.unregisterBuffers(
-        this.elements[idx].object.bufferData
+        this.elements[idx].object.representation.bufferData
       );
       this.elements.splice(idx, 1);
 
