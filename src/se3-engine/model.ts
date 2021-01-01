@@ -1,3 +1,4 @@
+import { ProgramInfo } from "../shaders/model";
 import { Scale3d } from "../objects/model";
 import { Object3d } from "../objects/object3d.class";
 import { S3e } from "./engine";
@@ -52,5 +53,6 @@ export interface ShapeDefinition {
 export interface RenderState {
   engine: S3e;
   renderedObject: Object3d;
+  currentProgram: ProgramInfo;
   hashes: Hashes;
 }

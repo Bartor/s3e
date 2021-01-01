@@ -1,7 +1,7 @@
 import { identity, multiply, scale } from "./../3d/matrix-operations";
 import { Camera } from "../objects/camera";
 import { Scene } from "./scene";
-import { Hash, RenderState } from "./model";
+import { RenderState } from "./model";
 import { Mat4 } from "../3d/model";
 import { BufferManager } from "./buffer-manager";
 import { ProgramManager } from "../shaders/program-manager";
@@ -45,23 +45,34 @@ class S3e {
   }
 
   public draw() {
-    // tslint:disable-next-line: no-bitwise
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
     const renderState: RenderState = {
       engine: this,
       renderedObject: null,
+      currentProgram: {
+        program: null,
+        featuresMask: null,
+        updateFunctions: [],
+      },
       hashes: {},
     };
 
     for (const element of this.currentScene.elements) {
       if (element.drawable === false) continue;
 
-      const currentProgram = this.programManager.requestProgram(
-        element.object.representation.featuresMask
-      );
+      if (
+        element.object.representation.featuresMask !==
+        renderState.currentProgram.featuresMask
+      ) {
+        renderState.currentProgram = this.programManager.requestProgram(
+          element.object.representation.featuresMask
+        );
+        // Clear hashes, new programs require new bind calls
+        renderState.hashes = {};
+        this.gl.useProgram(renderState.currentProgram.program);
+      }
 
-      this.gl.useProgram(currentProgram.program);
       this.gl.enable(this.gl.DEPTH_TEST);
       this.gl.enable(this.gl.CULL_FACE);
 
@@ -89,7 +100,7 @@ class S3e {
         );
       }
 
-      for (let updateFunction of currentProgram.updateFunctions) {
+      for (let updateFunction of renderState.currentProgram.updateFunctions) {
         updateFunction(renderState);
       }
 

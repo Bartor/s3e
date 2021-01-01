@@ -2,8 +2,9 @@ import { normalize } from "./../3d/matrix-operations";
 import { Vec3 } from "./../3d/model";
 import { Camera } from "../objects/camera";
 import { Object3d } from "../objects/object3d.class";
-import { SceneObject } from "./model";
+import { Hash, SceneObject } from "./model";
 import { S3e } from "./engine";
+import { firstBy } from "thenby";
 
 class Scene extends Object3d {
   public elements: SceneObject[] = [];
@@ -48,18 +49,46 @@ class Scene extends Object3d {
       object: child,
     });
 
-    /**
-     * Sort scene elements by their position buffers hashes
-     * Can be later improved to take normal and color buffers
-     * into consideration as well
-     */
-    this.elements = this.elements.sort((a, b) =>
-      a.object.representation.bufferData.positions?.hash
-        .toString()
-        .localeCompare(
-          b.object.representation.bufferData.positions?.hash.toString()
-        )
+    // Count which buffers hold how many different hashes
+    const buckets: Record<string, Set<Hash>> = {};
+    this.elements
+      .filter((element) => element.drawable)
+      .forEach((element) => {
+        Object.entries(element.object.representation.bufferData).forEach(
+          ([key, value]) => {
+            buckets[key] = buckets[key]
+              ? buckets[key].add(value.hash)
+              : new Set([value.hash]);
+          }
+        );
+      });
+
+    // First sort by the features (open gl program)
+    let sortingFn = firstBy<SceneObject>(
+      (a, b) =>
+        a.object.representation.featuresMask -
+        b.object.representation.featuresMask
     );
+
+    // Then sort by the least popular (so the switching isn't too often) buffers
+    Object.entries(buckets)
+      .sort(([_, a], [__, b]) => a.size - b.size)
+      .forEach(([key], index) => {
+        sortingFn = sortingFn.thenBy((a, b) => {
+          // Interlay asc/desc sort to join subsequent properties
+          if (index % 2) {
+            [a, b] = [b, a];
+          }
+
+          return a.object.representation.bufferData[key]?.hash
+            .toString()
+            .localeCompare(
+              b.object.representation.bufferData[key]?.hash.toString()
+            );
+        });
+      });
+
+    this.elements = this.elements.sort(sortingFn);
 
     for (const childChild of child.children) {
       this.connectScene(childChild);

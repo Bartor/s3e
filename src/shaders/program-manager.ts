@@ -16,6 +16,7 @@ class ProgramManager {
 
     this.programs[featuresMask] = {
       program,
+      featuresMask,
       updateFunctions: FEATURES_PARAMETERS.filter(
         (parameter) => (parameter.featureMask & featuresMask) !== 0
       )
