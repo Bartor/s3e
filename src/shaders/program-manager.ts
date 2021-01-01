@@ -20,8 +20,8 @@ class ProgramManager {
       updateFunctions: FEATURES_PARAMETERS.filter(
         (parameter) => (parameter.featureMask & featuresMask) !== 0
       )
-        .map((parameter) => parameter.createFeatureCalls(this.gl, program))
-        .reduce<ParameterUpdateFunction[]>((acc, e) => [...acc, ...e], []),
+        .map((parameter) => parameter.createFeatureCall(this.gl, program))
+        .reduce<ParameterUpdateFunction[]>((acc, e) => [...acc, e], []),
     };
 
     return this.programs[featuresMask];

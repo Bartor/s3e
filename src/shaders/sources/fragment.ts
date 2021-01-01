@@ -20,24 +20,57 @@ const shaderParts: ShaderPart[] = [
     sourceCode: "uniform float u_ambient;",
   },
   {
+    featureMask: FEATURES.NORMAL_MAP,
+    sourceCode: "varying mat3 v_TBN;\nuniform sampler2D u_normalMap;/*",
+  },
+  {
+    // This is commented out when using normal maps
     featureMask: FEATURES.DIFFUSE_LIGHTING,
-    sourceCode: "uniform vec3 u_reverseLightDirection;varying vec3 v_normal;",
+    sourceCode: "varying vec3 v_normal;",
+  },
+  {
+    featureMask: FEATURES.NORMAL_MAP,
+    sourceCode: "*/",
+  },
+  {
+    featureMask: FEATURES.DIFFUSE_LIGHTING,
+    sourceCode: "uniform vec3 u_reverseLightDirection;\n",
   },
   {
     featureMask: FEATURES.TEXTURES,
     sourceCode: "uniform sampler2D u_texture;",
   },
+
   {
     featureMask: UNIVERSAL_MASK,
     sourceCode: "void main() {",
   },
   {
-    featureMask: FEATURES.DIFFUSE_LIGHTING | FEATURES.AMBIENT_LIGHTING,
-    sourceCode: "float light = 0.0;",
+    featureMask:
+      FEATURES.DIFFUSE_LIGHTING |
+      FEATURES.AMBIENT_LIGHTING |
+      FEATURES.NORMAL_MAP,
+    sourceCode: "float light = 0.0;\nvec3 normal = vec3(0.0);",
   },
   {
+    featureMask: FEATURES.NORMAL_MAP,
+    sourceCode:
+      "normal = texture2D(u_normalMap, v_uv).rgb;\n" +
+      "normal = normal * 2.0 - 1.0;\n" +
+      "normal = normalize(v_TBN * normal);\n/*",
+  },
+  {
+    // This is commented out when using normal maps
     featureMask: FEATURES.DIFFUSE_LIGHTING,
-    sourceCode: "light += dot(normalize(v_normal), u_reverseLightDirection);",
+    sourceCode: "normal = v_normal;",
+  },
+  {
+    featureMask: FEATURES.NORMAL_MAP,
+    sourceCode: "*/",
+  },
+  {
+    featureMask: FEATURES.DIFFUSE_LIGHTING | FEATURES.NORMAL_MAP,
+    sourceCode: "light += dot(normalize(normal), u_reverseLightDirection);",
   },
   {
     featureMask: FEATURES.AMBIENT_LIGHTING,
@@ -60,7 +93,10 @@ const shaderParts: ShaderPart[] = [
     sourceCode: "gl_FragColor = texture2D(u_texture, v_uv);",
   },
   {
-    featureMask: FEATURES.AMBIENT_LIGHTING | FEATURES.DIFFUSE_LIGHTING,
+    featureMask:
+      FEATURES.AMBIENT_LIGHTING |
+      FEATURES.DIFFUSE_LIGHTING |
+      FEATURES.NORMAL_MAP,
     sourceCode: "gl_FragColor.rgb *= light;",
   },
   {

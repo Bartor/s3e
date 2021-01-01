@@ -32,20 +32,24 @@ export const createTangentsBitangents = (
 
     const f = 1 / (deltaUV1[0] * deltaUV2[1] - deltaUV2[0] * deltaUV1[1]);
 
-    tangents[(i / 4) * 3 + 0] =
-      f * (deltaUV2[1] * edge1[0] - deltaUV1[1] * edge2[0]);
-    tangents[(i / 4) * 3 + 1] =
-      f * (deltaUV2[1] * edge1[1] - deltaUV1[1] * edge2[1]);
-    tangents[(i / 4) * 3 + 2] =
-      f * (deltaUV2[1] * edge1[2] - deltaUV1[1] * edge2[2]);
+    for (let j = 0; j < 9; j += 3) {
+      tangents[(i / 4) * 3 + j] =
+        f * (deltaUV2[1] * edge1[0] - deltaUV1[1] * edge2[0]);
+      tangents[(i / 4) * 3 + j + 1] =
+        f * (deltaUV2[1] * edge1[1] - deltaUV1[1] * edge2[1]);
+      tangents[(i / 4) * 3 + j + 2] =
+        f * (deltaUV2[1] * edge1[2] - deltaUV1[1] * edge2[2]);
 
-    bitangents[(i / 4) * 3 + 0] =
-      f * (-deltaUV2[0] * edge1[0] + deltaUV1[0] * edge2[0]);
-    bitangents[(i / 4) * 3 + 1] =
-      f * (-deltaUV2[0] * edge1[1] + deltaUV1[0] * edge2[1]);
-    bitangents[(i / 4) * 3 + 2] =
-      f * (-deltaUV2[0] * edge1[2] + deltaUV1[0] * edge2[2]);
+      bitangents[(i / 4) * 3 + j] =
+        f * (-deltaUV2[0] * edge1[0] + deltaUV1[0] * edge2[0]);
+      bitangents[(i / 4) * 3 + j + 1] =
+        f * (-deltaUV2[0] * edge1[1] + deltaUV1[0] * edge2[1]);
+      bitangents[(i / 4) * 3 + j + 2] =
+        f * (-deltaUV2[0] * edge1[2] + deltaUV1[0] * edge2[2]);
+    }
   }
+
+  console.log(tangents, bitangents);
 
   return { tangents, bitangents };
 };

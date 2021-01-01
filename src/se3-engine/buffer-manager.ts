@@ -9,6 +9,7 @@ import {
   TextureInfo,
 } from "./model";
 import { createNormals } from "./representation/create-normals";
+import { createTangentsBitangents } from "./representation/create-tangents-bitangents";
 import { loadObj } from "./representation/obj-loader";
 
 const hashString = function (toHash: string, seed = 0) {
@@ -209,8 +210,11 @@ class BufferManager {
       },
     };
 
+    // TODO: ADD NORMAL MAPS TO MODEL LOADING
     if (options?.texture) {
-      representation.texture = this.loadTexture(options.texture.source);
+      representation.textures = {
+        main: this.loadTexture(options.texture.main),
+      };
       representation.featuresMask |= FEATURES.TEXTURES;
     } else if (options?.color) {
       representation.bufferData.colors = this.resolveColorsBuffer(
@@ -257,16 +261,44 @@ class BufferManager {
       },
     };
 
-    if (options?.texture && options.texture.uvs) {
-      representation.texture = this.loadTexture(options.texture.source);
+    if (options?.texture) {
+      representation.textures = {
+        main: this.loadTexture(options.texture.main),
+      };
       representation.featuresMask |= FEATURES.TEXTURES;
 
+      const uvs = new Float32Array(options.texture.uvs ?? shape.uvs);
       representation.bufferData.uvs = this.resolveUniversalBuffer(
         "uvs",
-        () => new Float32Array(options.texture.uvs),
+        () => uvs,
         2,
         shape.hash
       ).bufferInfo;
+
+      if (options.texture.normalMap) {
+        representation.textures.normalMap = this.loadTexture(
+          options.texture.normalMap
+        );
+        representation.featuresMask |= FEATURES.NORMAL_MAP;
+
+        const { tangents, bitangents } = createTangentsBitangents(
+          shape.positions,
+          uvs
+        );
+
+        representation.bufferData.tangents = this.resolveUniversalBuffer(
+          "tangents",
+          () => tangents,
+          3,
+          shape.hash
+        ).bufferInfo;
+        representation.bufferData.bitangents = this.resolveUniversalBuffer(
+          "bitangents",
+          () => bitangents,
+          3,
+          shape.hash
+        ).bufferInfo;
+      }
     } else if (options?.color) {
       representation.bufferData.colors = this.resolveColorsBuffer(
         options.color,

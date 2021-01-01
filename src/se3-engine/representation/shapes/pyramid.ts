@@ -1,4 +1,3 @@
-import { identity, scale } from "../../../3d/matrix-operations";
 import { ShapeDefinition } from "../../model";
 
 const positions = [
@@ -88,6 +87,49 @@ const positions = [
   1,
 ];
 
+const uvs = [
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  1,
+  0,
+  0,
+  1,
+  0,
+
+  0,
+  0,
+  0,
+  1,
+  1,
+  1 / 2,
+
+  0,
+  0,
+  0,
+  1,
+  1,
+  1 / 2,
+
+  0,
+  0,
+  0,
+  1,
+  1,
+  1 / 2,
+
+  0,
+  0,
+  0,
+  1,
+  1,
+  1 / 2,
+];
+
 const createPyramid = (
   xBase: number,
   zBase: number = xBase,
@@ -96,6 +138,7 @@ const createPyramid = (
   hash: "pyramid",
   defaultScale: { x: xBase, y: height, z: zBase },
   positions,
+  uvs,
 });
 
 export { createPyramid };

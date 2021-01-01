@@ -1,4 +1,3 @@
-import { identity, scale } from "../../../3d/matrix-operations";
 import { ShapeDefinition } from "../../model";
 
 const positions = [
@@ -171,6 +170,86 @@ const positions = [
   1,
 ];
 
+const uvs = [
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  1,
+  0,
+  0,
+  1,
+  0,
+
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  1,
+  0,
+  0,
+  1,
+  0,
+
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  1,
+  0,
+  0,
+  1,
+  0,
+
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  1,
+  0,
+  0,
+  1,
+  0,
+
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  1,
+  0,
+  0,
+  1,
+  0,
+
+  0,
+  0,
+  0,
+  1,
+  1,
+  1,
+  1,
+  1,
+  0,
+  0,
+  1,
+  0,
+];
+
 const createCuboid = (
   xWidth: number,
   yHeight: number = xWidth,
@@ -179,6 +258,7 @@ const createCuboid = (
   hash: "cuboid",
   defaultScale: { x: xWidth, y: yHeight, z: zDepth },
   positions,
+  uvs,
 });
 
 export { createCuboid };

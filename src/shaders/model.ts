@@ -9,10 +9,10 @@ export type ParameterUpdateFunction = (renderState: RenderState) => void;
 
 export interface FeatureParameters {
   featureMask: number;
-  createFeatureCalls: (
+  createFeatureCall: (
     gl: WebGLRenderingContext,
     program: WebGLProgram
-  ) => ParameterUpdateFunction[];
+  ) => ParameterUpdateFunction;
 }
 
 export interface ShaderPart {

@@ -16,11 +16,11 @@ async function main() {
   );
 
   const first = new Object3d(
-    engine.bufferManager.loadObj(text, { texture: { source: "HDU_01.jpg" } })
+    engine.bufferManager.loadObj(text, { texture: { main: "HDU_01.jpg" } })
   );
 
   const second = new Object3d(
-    engine.bufferManager.loadObj(text2, { texture: { source: "HDU_02.jpg" } })
+    engine.bufferManager.loadObj(text2, { texture: { main: "HDU_02.jpg" } })
   );
 
   first.scale = { x: 0.1, y: 0.1, z: 0.1 };

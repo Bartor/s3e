@@ -15,7 +15,8 @@ export type Hashes = Record<string, Hash>;
 export interface LoadOptions {
   color?: number[];
   texture?: {
-    source: string;
+    main: string;
+    normalMap?: string;
     uvs?: number[];
   };
 }
@@ -41,11 +42,12 @@ export interface ObjectRepresentation {
   bufferData: BufferData;
   defaultScale?: Scale3d;
   featuresMask: number;
-  texture?: TextureInfo;
+  textures?: Record<string, TextureInfo>;
 }
 
 export interface ShapeDefinition {
   positions: number[];
+  uvs: number[];
   hash: string;
   defaultScale: Scale3d;
 }
