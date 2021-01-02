@@ -61,6 +61,9 @@ class S3e {
     };
 
     for (const element of this.currentScene.elements) {
+      renderState.renderedObject = element.object;
+      renderState.drawable = element.drawable;
+
       if (
         element.drawable &&
         element.object.representation.featuresMask !==
@@ -76,9 +79,6 @@ class S3e {
 
       this.gl.enable(this.gl.DEPTH_TEST);
       this.gl.enable(this.gl.CULL_FACE);
-
-      renderState.renderedObject = element.object;
-      renderState.drawable = element.drawable;
 
       if (element.object.representation.defaultScale !== undefined) {
         scale(

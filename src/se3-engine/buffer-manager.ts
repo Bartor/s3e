@@ -44,8 +44,9 @@ interface TextureCounter {
 type BufferMap = Record<Hash, BufferCounter | undefined>;
 
 class BufferManager {
-  private universalBuffersMap: Record<string, BufferMap | undefined> = {};
-  private colorsBuffers: BufferMap = {};
+  private buffersMap: Record<string, BufferMap | undefined> = {
+    colors: {},
+  };
   private textures: Record<Hash, TextureCounter | undefined> = {};
 
   constructor(private gl: WebGLRenderingContext) {}
@@ -69,12 +70,12 @@ class BufferManager {
   private resolveColorsBuffer(color: number[], length: number): BufferCounter {
     const hash = hashString(color.join(""));
 
-    if (this.colorsBuffers[hash] !== undefined) {
+    if (this.buffersMap.colors[hash] !== undefined) {
       // This color combinations buffer exits and will be used
-      this.colorsBuffers[hash].instances++;
+      this.buffersMap.colors[hash].instances++;
 
       // Check if the existing buffer is long enough
-      if (this.colorsBuffers[hash].bufferInfo.length < length) {
+      if (this.buffersMap.colors[hash].bufferInfo.length < length) {
         // This buffer is too short; extend this buffer
         const data = new Float32Array(
           Array.from({ length }).map((_, i) => color[i % color.length])
@@ -82,12 +83,12 @@ class BufferManager {
 
         this.gl.bindBuffer(
           this.gl.ARRAY_BUFFER,
-          this.colorsBuffers[hash].bufferInfo.buffer
+          this.buffersMap.colors[hash].bufferInfo.buffer
         );
         this.gl.bufferData(this.gl.ARRAY_BUFFER, data, this.gl.STATIC_DRAW);
       } else {
         // This buffer is long enough to serve this
-        return this.colorsBuffers[hash];
+        return this.buffersMap.colors[hash];
       }
     } else {
       // This color combination wasn't used before; create a new buffer
@@ -95,7 +96,7 @@ class BufferManager {
         Array.from({ length }).map((_, i) => color[i % color.length])
       );
 
-      return this.bufferNewData(data, 4, this.colorsBuffers, hash);
+      return this.bufferNewData(data, 4, this.buffersMap.colors, hash);
     }
   }
 
@@ -105,18 +106,18 @@ class BufferManager {
     itemsPerVertex: number,
     hash: Hash
   ): BufferCounter {
-    if (this.universalBuffersMap[buffersType] === undefined) {
-      this.universalBuffersMap[buffersType] = {};
+    if (this.buffersMap[buffersType] === undefined) {
+      this.buffersMap[buffersType] = {};
     }
 
-    if (this.universalBuffersMap[buffersType][hash] !== undefined) {
-      this.universalBuffersMap[buffersType][hash].instances++;
-      return this.universalBuffersMap[buffersType][hash];
+    if (this.buffersMap[buffersType][hash] !== undefined) {
+      this.buffersMap[buffersType][hash].instances++;
+      return this.buffersMap[buffersType][hash];
     } else {
       return this.bufferNewData(
         dataSource(),
         itemsPerVertex,
-        this.universalBuffersMap[buffersType],
+        this.buffersMap[buffersType],
         hash
       );
     }
@@ -314,12 +315,7 @@ class BufferManager {
     representation: ObjectRepresentation
   ): ObjectRepresentation {
     Object.keys(representation.bufferData).forEach((key) => {
-      if (key === "colors") {
-        this.colorsBuffers[representation.bufferData.colors.hash].instances++;
-      } else {
-        this.universalBuffersMap[key][representation.bufferData[key].hash]
-          .instances++;
-      }
+      this.buffersMap[key][representation.bufferData[key].hash].instances++;
     });
 
     return { ...representation, bufferData: { ...representation.bufferData } };
@@ -338,11 +334,7 @@ class BufferManager {
     };
 
     Object.keys(data).forEach((key) => {
-      if (key === "colors") {
-        checkAndUnregister(this.colorsBuffers, data[key].hash);
-      } else {
-        checkAndUnregister(this.universalBuffersMap[key], data[key].hash);
-      }
+      checkAndUnregister(this.buffersMap[key], data[key].hash);
     });
   }
 }

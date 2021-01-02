@@ -1,4 +1,4 @@
-import { compileShader } from "../compile-shader";
+import { compileShader } from "../util/compile-shader";
 import { FEATURES, UNIVERSAL_MASK } from "../features";
 import { ShaderPart } from "../model";
 
