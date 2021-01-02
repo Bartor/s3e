@@ -45,7 +45,7 @@ class Scene extends Object3d {
     child.scene = this;
 
     this.elements.push({
-      drawable: !(child instanceof Camera),
+      drawable: child.representation.featuresMask !== 0,
       object: child,
     });
 

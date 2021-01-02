@@ -1,5 +1,5 @@
 import { createProgram } from "./create-program";
-import { FEATURES_PARAMETERS } from "./features";
+import { createBasicCall, FEATURES_PARAMETERS } from "./features";
 import { ParameterUpdateFunction, ProgramInfo } from "./model";
 import { getFragmentShader } from "./sources/fragment";
 import { getVertexShader } from "./sources/vertex";
@@ -22,6 +22,7 @@ class ProgramManager {
       )
         .map((parameter) => parameter.createFeatureCall(this.gl, program))
         .reduce<ParameterUpdateFunction[]>((acc, e) => [...acc, e], []),
+      basicCall: createBasicCall(this.gl, program),
     };
 
     return this.programs[featuresMask];

@@ -35,7 +35,9 @@ function main() {
 
   engine.currentScene.ambientLightLevel = 0.8;
 
+  cube.position.z = -20;
   engine.currentScene.currentCamera.position = { x: 50, y: 50, z: 100 };
+  // engine.currentScene.currentCamera.position.z = 100;
   engine.currentScene.currentCamera.lookAt(cube.position);
 
   function draw(t) {

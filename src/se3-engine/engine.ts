@@ -50,20 +50,21 @@ class S3e {
     const renderState: RenderState = {
       engine: this,
       renderedObject: null,
+      drawable: false,
       currentProgram: {
         program: null,
         featuresMask: null,
+        basicCall: null,
         updateFunctions: [],
       },
       hashes: {},
     };
 
     for (const element of this.currentScene.elements) {
-      if (element.drawable === false) continue;
-
       if (
+        element.drawable &&
         element.object.representation.featuresMask !==
-        renderState.currentProgram.featuresMask
+          renderState.currentProgram.featuresMask
       ) {
         renderState.currentProgram = this.programManager.requestProgram(
           element.object.representation.featuresMask
@@ -77,6 +78,7 @@ class S3e {
       this.gl.enable(this.gl.CULL_FACE);
 
       renderState.renderedObject = element.object;
+      renderState.drawable = element.drawable;
 
       if (element.object.representation.defaultScale !== undefined) {
         scale(
@@ -104,12 +106,14 @@ class S3e {
         updateFunction(renderState);
       }
 
-      this.gl.drawArrays(
-        this.gl.TRIANGLES,
-        0,
-        element.object.representation.bufferData.positions.length /
-          element.object.representation.bufferData.positions.itemsPerVertex
-      );
+      if (element.drawable) {
+        this.gl.drawArrays(
+          this.gl.TRIANGLES,
+          0,
+          element.object.representation.bufferData.positions.length /
+            element.object.representation.bufferData.positions.itemsPerVertex
+        );
+      }
     }
 
     for (const element of this.currentScene.elements) {

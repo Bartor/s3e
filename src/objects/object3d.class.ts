@@ -6,16 +6,14 @@ import { Mat4 } from "../3d/model";
 import { Position3d, Rotation3d, Scale3d } from "./model";
 import { Scene } from "../se3-engine/scene";
 import { ObjectRepresentation } from "../se3-engine/model";
-import { FEATURES } from "../shaders/features";
 
 class Object3d {
   constructor(
     public representation: ObjectRepresentation = {
       defaultScale: { x: 1, y: 1, z: 1 },
-      featuresMask:
-        FEATURES.AMBIENT_LIGHTING | FEATURES.COLOR | FEATURES.DIFFUSE_LIGHTING,
+      featuresMask: 0,
       bufferData: {
-        positions: undefined,
+        positions: null,
       },
     }
   ) {}

@@ -24,4 +24,5 @@ export interface ProgramInfo {
   program: WebGLProgram;
   featuresMask: number;
   updateFunctions: ParameterUpdateFunction[];
+  basicCall: ParameterUpdateFunction;
 }

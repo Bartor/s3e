@@ -58,7 +58,7 @@ const shaderParts: ShaderPart[] = [
     featureMask: FEATURES.NORMAL_MAP,
     sourceCode:
       "vec3 T = normalize(vec3(u_model * vec4(a_tangent, 0.0)));\n" +
-      "vec3 B = normalize(vec3(u_model * vec4(a_bitangent, 0.0)));\n" +
+      "vec3 B = normalize(-vec3(u_model * vec4(a_bitangent, 0.0)));\n" +
       "vec3 N = normalize(vec3(u_model * vec4(a_normal, 0.0)));\n" +
       "v_TBN = mat3(T, B, N);/*",
   },

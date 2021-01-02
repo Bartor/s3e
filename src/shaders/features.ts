@@ -1,6 +1,7 @@
 import { createUniformUpdateCall } from "../data-bindings/create-uniform-update-call";
 import { createAttributeUpdateCall } from "../data-bindings/create-attribute-binding-call";
 import { FeatureParameters } from "./model";
+import { RenderState } from "../se3-engine/model";
 
 const FEATURES = {
   COLOR: 1 << 0,
@@ -12,37 +13,43 @@ const FEATURES = {
 
 const UNIVERSAL_MASK = Object.values(FEATURES).reduce((acc, e) => acc | e, 0);
 
+const createBasicCall: (
+  gl: WebGLRenderingContext,
+  program: WebGLProgram
+) => (state: RenderState) => void = (gl, program) => {
+  const positionsLocation = gl.getAttribLocation(program, "a_position");
+  const worldViewLocation = gl.getUniformLocation(program, "u_worldView");
+
+  const positionCall = createAttributeUpdateCall(gl, {
+    type: "vec4",
+    location: positionsLocation,
+  });
+  const worldViewCall = createUniformUpdateCall(gl, {
+    type: "mat4",
+    location: worldViewLocation,
+  });
+
+  return (state) => {
+    if (
+      state.drawable &&
+      state.hashes.position !==
+        state.renderedObject.representation.bufferData.positions.hash
+    ) {
+      positionCall(
+        state.renderedObject.representation.bufferData.positions.buffer
+      );
+      state.hashes.position =
+        state.renderedObject.representation.bufferData.positions.hash;
+    }
+
+    worldViewCall(state.engine.worldView);
+  };
+};
+
 const FEATURES_PARAMETERS: FeatureParameters[] = [
   {
     featureMask: UNIVERSAL_MASK,
-    createFeatureCall: (gl, program) => {
-      const positionsLocation = gl.getAttribLocation(program, "a_position");
-      const worldViewLocation = gl.getUniformLocation(program, "u_worldView");
-
-      const positionCall = createAttributeUpdateCall(gl, {
-        type: "vec4",
-        location: positionsLocation,
-      });
-      const worldViewCall = createUniformUpdateCall(gl, {
-        type: "mat4",
-        location: worldViewLocation,
-      });
-
-      return (state) => {
-        if (
-          state.hashes.position !==
-          state.renderedObject.representation.bufferData.positions.hash
-        ) {
-          positionCall(
-            state.renderedObject.representation.bufferData.positions.buffer
-          );
-          state.hashes.position =
-            state.renderedObject.representation.bufferData.positions.hash;
-        }
-
-        worldViewCall(state.engine.worldView);
-      };
-    },
+    createFeatureCall: createBasicCall,
   },
   {
     featureMask: FEATURES.COLOR,
@@ -221,4 +228,4 @@ const FEATURES_PARAMETERS: FeatureParameters[] = [
   },
 ];
 
-export { FEATURES, UNIVERSAL_MASK, FEATURES_PARAMETERS };
+export { FEATURES, UNIVERSAL_MASK, FEATURES_PARAMETERS, createBasicCall };

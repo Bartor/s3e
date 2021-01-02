@@ -1,17 +1,17 @@
 window.addEventListener("load", main);
-CAMERA_DISTANCE = 200;
 
 async function main() {
   const canvas = document.getElementById("example");
 
   const engine = new S3e(canvas);
-  engine.currentScene.ambientLightLevel = 0.1;
-  engine.currentScene.lightDirection = [0.5, 0.3, -1];
+  engine.currentScene.ambientLightLevel = 0.2;
+  engine.currentScene.lightDirection = [0.5, 0.5, 1];
 
   const cube1 = new Object3d(
     engine.bufferManager.loadShape(createCuboid(30), {
       texture: {
-        main: "blocks_colors.jpg",
+        main: "blocks2_colors.jpg",
+        normalMap: "blocks2_normals.jpg",
       },
     })
   );
@@ -30,34 +30,28 @@ async function main() {
 
   engine.currentScene.addChild(cube1);
   engine.currentScene.addChild(cube2);
-  engine.currentScene.currentCamera.position.z = -CAMERA_DISTANCE;
+  engine.currentScene.currentCamera.position.z = 100;
+  engine.currentScene.currentCamera.lookAt(engine.currentScene.position);
 
   function draw(t) {
     requestAnimationFrame(draw);
-
-    engine.currentScene.currentCamera.lookAt(engine.currentScene.position);
-
-    cube1.rotation = { x: t / 3000, y: t / 3000, z: t / 3000 };
-    cube2.rotation = { x: t / 3000, y: t / 3000, z: t / 3000 };
 
     engine.draw();
   }
 
   function refreshCamera(event) {
-    engine.currentScene.currentCamera.position.x =
-      CAMERA_DISTANCE *
-      Math.sin((2 * Math.PI * event.offsetX) / window.innerWidth);
-
-    engine.currentScene.currentCamera.position.z =
-      CAMERA_DISTANCE *
-      Math.cos((2 * Math.PI * event.offsetX) / window.innerWidth);
-
-    engine.currentScene.currentCamera.position.y =
-      CAMERA_DISTANCE *
-      Math.sin((Math.PI * event.offsetY) / window.innerHeight - Math.PI / 2);
+    cube1.rotation.y = 2 * (1 / 2 - event.offsetX / window.innerWidth);
+    cube1.rotation.x = 2 * (1 / 2 - event.offsetY / window.innerHeight);
+    cube2.rotation.y = 2 * (1 / 2 - event.offsetX / window.innerWidth);
+    cube2.rotation.x = 2 * (1 / 2 - event.offsetY / window.innerHeight);
   }
 
   window.addEventListener("mousemove", refreshCamera);
+
+  window.addEventListener("mousedown", () => {
+    cube1.representation.featuresMask ^= 1 << 4;
+    cube2.representation.featuresMask ^= 1 << 4;
+  });
 
   draw(0);
 }

@@ -49,7 +49,5 @@ export const createTangentsBitangents = (
     }
   }
 
-  console.log(tangents, bitangents);
-
   return { tangents, bitangents };
 };

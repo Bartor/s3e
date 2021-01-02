@@ -14,6 +14,7 @@ import {
 } from "./animations/default-timelines/object3d-timelines";
 import { createPyramid } from "./se3-engine/representation/shapes/pyramid";
 import { createCuboid } from "./se3-engine/representation/shapes/cuboid";
+import { ObjectContainer } from "./objects/object-container.class";
 
 export {
   Camera,
@@ -31,4 +32,5 @@ export {
   S3e,
   Scene,
   Timeline,
+  ObjectContainer,
 };

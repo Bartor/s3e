@@ -55,6 +55,7 @@ export interface ShapeDefinition {
 export interface RenderState {
   engine: S3e;
   renderedObject: Object3d;
+  drawable: boolean;
   currentProgram: ProgramInfo;
   hashes: Hashes;
 }
