@@ -6,6 +6,9 @@ import { Hash, SceneObject } from "./model";
 import { S3e } from "./engine";
 import { firstBy } from "thenby";
 
+/**
+ * A single scene - the root element of a rendered scene graph.
+ */
 class Scene extends Object3d {
   public elements: SceneObject[] = [];
 
@@ -39,6 +42,10 @@ class Scene extends Object3d {
     return this._lightDirection;
   }
 
+  /**
+   * Connects a new object to the scene, is usually called by Object3d when adding it to a parent.
+   * @param {Object3d} child An object to be added to the scene.
+   */
   public connectScene(child: Object3d) {
     if (this.elements.find((element) => element.object === child)) return;
 

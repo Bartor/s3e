@@ -7,6 +7,9 @@ import { Position3d, Rotation3d, Scale3d } from "./model";
 import { Scene } from "../se3-engine/scene";
 import { ObjectRepresentation } from "../se3-engine/model";
 
+/**
+ * A base class for all objects in the scene. Holds all logic related to matrix calculations and physical parameters of the object in a scene.
+ */
 class Object3d {
   constructor(
     public representation: ObjectRepresentation = {

@@ -43,6 +43,9 @@ interface TextureCounter {
 
 type BufferMap = Record<Hash, BufferCounter | undefined>;
 
+/**
+ * A class for managing buffers in the engine.
+ */
 class BufferManager {
   private buffersMap: Record<string, BufferMap | undefined> = {
     colors: {},

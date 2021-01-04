@@ -8,6 +8,12 @@ class Timeline<T> {
   public loop: boolean = false;
   public offset: number = 0;
 
+  /**
+   * Create a new timeline
+   * @param {number} fps Number of frames per second of animation
+   * @param {ValueChangeCallback} valueChangeCallback A function which takes a progress between two frames and two frames as well, using them to set some values
+   * @param {Keyframe} initialFrame A timeline must consist at least one keyframe
+   */
   constructor(
     private fps: number,
     private valueChangeCallback: ValueChangeCallback<T>,
@@ -51,6 +57,10 @@ class Timeline<T> {
     this.timespan = this.keyframes[this.keyframes.length - 1].frame / this.fps;
   }
 
+  /**
+   * Evaluates the value controlled by this timeline
+   * @param {number} time A time in seconds the value controlled by this timeline should be set according to 
+   */
   public evaluateAt(time: number) {
     if (
       time > this.keyframes[this.keyframes.length - 1].frame / this.fps &&

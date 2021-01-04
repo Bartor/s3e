@@ -4,6 +4,9 @@ import { ParameterUpdateFunction, ProgramInfo } from "./model";
 import { getFragmentShader } from "./sources/fragment";
 import { getVertexShader } from "./sources/vertex";
 
+/**
+ * A class for managing WebGL programs in the engine.
+ */
 class ProgramManager {
   private programs: Record<number, ProgramInfo | undefined> = {};
 
@@ -26,7 +29,6 @@ class ProgramManager {
     });
   }
 
-  // This should later be converted to Promise to get rid of lag spikes
   public requestProgram(featureMask: number): ProgramInfo {
     return this.programs[featureMask] ?? this.prepareProgram(featureMask);
   }

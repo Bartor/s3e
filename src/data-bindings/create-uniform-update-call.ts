@@ -15,6 +15,11 @@ const typeMappings: Record<
   sampler2D: { functionName: "uniform1i" },
 };
 
+/**
+ * Creates a function which updates a webgl uniform
+ * @param {WebGLRenderingContext} gl Webgl context
+ * @param {CompiledParameterDescriptor} parameter A descriptor of the uniform
+ */
 const createUniformUpdateCall = (
   gl: any,
   parameter: CompiledParameterDescriptor<WebGLUniformLocation>

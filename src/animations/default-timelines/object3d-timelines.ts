@@ -4,6 +4,11 @@ import { Position3d } from "../../objects/model";
 import { Object3d } from "../../objects/object3d.class";
 import { Timeline } from "../timeline.class";
 
+/**
+ * Creates a position controlling timeline
+ * @param {Object3d} object An object to be controller
+ * @param {number} fps Number of frames per second
+ */
 export const getPositionTimeline = (object: Object3d, fps: number) =>
   new Timeline<Position3d>(
     fps,
@@ -24,6 +29,11 @@ export const getPositionTimeline = (object: Object3d, fps: number) =>
     }
   );
 
+/**
+ * Creates a rotation controlling timeline
+ * @param {Object3d} object An object to be controller
+ * @param {number} fps Number of frames per second
+ */
 export const getRotationTimeline = (object: Object3d, fps: number) =>
   new Timeline<Rotation3d>(
     fps,
@@ -44,6 +54,11 @@ export const getRotationTimeline = (object: Object3d, fps: number) =>
     }
   );
 
+/**
+ * Creates a scale controlling timeline
+ * @param {Object3d} object An object to be controller
+ * @param {number} fps Number of frames per second
+ */
 export const getScaleTimeline = (object: Object3d, fps: number) =>
   new Timeline<Scale3d>(
     fps,

@@ -11,6 +11,15 @@ const typeMappings: Record<string, { size: number }> = {
   mat4: { size: 16 },
 };
 
+/**
+ * Creates a function which updates a webgl attribute
+ * @param {WebGLRenderingContext} gl WebGL context
+ * @param {CompiledParameterDescriptor} parameter A descriptor of the attribute
+ * @param {number} customSize Overrides size per vertex of the attribute
+ * @param {boolean} normalize If the values should be normalized
+ * @param {number} stride If there's some stride
+ * @param {number} offset if there's some offset
+ */
 const createAttributeUpdateCall = (
   gl: WebGLRenderingContext,
   parameter: CompiledParameterDescriptor<number>,
