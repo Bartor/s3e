@@ -4,6 +4,12 @@ async function main() {
   const canvas = document.getElementById("example");
 
   const engine = new S3e(canvas);
+  window.addEventListener("resize", () => {
+    engine.currentScene.currentCamera.updateCameraSettings({
+      aspectRatio: canvas.clientWidth / canvas.clientHeight,
+    });
+  });
+
   engine.currentScene.ambientLightLevel = 0.1;
   engine.currentScene.lightDirection = [-0.5, 0.4, 0.4];
 

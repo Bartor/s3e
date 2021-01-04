@@ -5,13 +5,13 @@ function main() {
 
   const engine = new S3e(canvas);
   const cubeObject = new Object3d(
-    engine.bufferManager.loadShape(createCuboid(20), { color: [0, 0.44, 1, 1] })
+    engine.bufferManager.loadShape(createCuboid(1), { color: [0, 0.44, 1, 1] })
   );
 
   engine.currentScene.addChild(cubeObject);
 
   engine.currentScene.ambientLightLevel = 0.5;
-  engine.currentScene.currentCamera.position.z = 100;
+  engine.currentScene.currentCamera.position.z = 10;
 
   const position = getPositionTimeline(cubeObject, 60);
   position.loop = true;
@@ -24,7 +24,7 @@ function main() {
     },
     {
       frame: 60,
-      value: { x: 30, y: 0, z: 0 },
+      value: { x: 3, y: 0, z: 0 },
       interpolation: KeyframeType.SQUARE_IN_OUT,
     },
     {
@@ -44,12 +44,12 @@ function main() {
     },
     {
       frame: 660,
-      value: { x: -20, y: 10, z: -30 },
+      value: { x: -2, y: 1, z: -3 },
       interpolation: KeyframeType.HOLD,
     },
     {
       frame: 720,
-      value: { x: -20, y: 10, z: -30 },
+      value: { x: -2, y: 1, z: -3 },
       interpolation: KeyframeType.SQUARE_IN_OUT,
     },
     {

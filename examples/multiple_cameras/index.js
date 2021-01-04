@@ -60,17 +60,13 @@ function main() {
 
   document.getElementById("camera-one").addEventListener("click", () => {
     engine.currentScene.currentCamera = cameraOne;
-
-    console.log(pyramid, cubeObject);
   });
 
   document.getElementById("camera-two").addEventListener("click", () => {
     engine.currentScene.currentCamera = cameraTwo;
-    console.log(pyramid, cubeObject);
   });
 
   document.getElementById("camera-three").addEventListener("click", () => {
     engine.currentScene.currentCamera = cameraThree;
-    console.log(pyramid, cubeObject);
   });
 }

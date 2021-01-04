@@ -1,35 +1,32 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <head>
+      <title>S3e Examples</title>
+      <link rel="stylesheet" href="../style.css" />
+    </head>
+
     <script src="../../dist/main-bundle.js"></script>
     <script src="index.js"></script>
     <style>
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-      }
-
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #111;
-        flex-direction: column;
-      }
-
       #example {
         width: 700px;
         height: 500px;
+      }
+
+      nav {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem;
       }
     </style>
   </head>
   <body>
     <canvas id="example"></canvas>
-    <ul>
-      <li><button id="camera-one">First camera</button></li>
-      <li><button id="camera-two">Second camera</button></li>
-      <li><button id="camera-three">Third camera</button></li>
-    </ul>
+    <nav>
+      <button id="camera-one">First camera</button>
+      <button id="camera-two">Second camera</button>
+      <button id="camera-three">Third camera</button>
+    </nav>
   </body>
 </html>

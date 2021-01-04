@@ -7,17 +7,17 @@ class Camera extends Object3d {
   private _viewMat: Mat4 = new Float32Array(16);
   public perspectiveMatrix: Mat4;
 
-  constructor(settings: CameraSettings) {
+  constructor(private settings: CameraSettings) {
     super();
 
     this.updateCameraSettings(settings);
   }
 
   public updateCameraSettings({
-    viewAngle,
-    far,
-    near,
-    aspectRatio,
+    viewAngle = this.settings.viewAngle,
+    far = this.settings.far,
+    near = this.settings.near,
+    aspectRatio = this.settings.aspectRatio,
   }: CameraSettings) {
     this.perspectiveMatrix = perspective(viewAngle, aspectRatio, near, far);
     this.changed = true;

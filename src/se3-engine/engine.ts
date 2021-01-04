@@ -30,6 +30,8 @@ class S3e {
         aspectRatio: canvasElement.width / canvasElement.height,
       })
     );
+
+    window.addEventListener("resize", () => this.updateCanvasSize());
   }
 
   public updateCanvasSize() {
