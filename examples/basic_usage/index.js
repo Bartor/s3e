@@ -28,7 +28,14 @@ function main() {
   pyramid2.rotation.x = Math.PI;
 
   pyramid1.addChild(pyramid2);
-  pyramid1.addChild(pyramid3);
+
+  setTimeout(() => {
+    pyramid1.addChild(pyramid3);
+  }, 2000);
+
+  setTimeout(() => {
+    pyramid1.removeChild(pyramid3);
+  }, 4000);
 
   engine.currentScene.addChild(pyramid1);
   engine.currentScene.addChild(cube);

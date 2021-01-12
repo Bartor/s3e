@@ -42,6 +42,9 @@ class Object3d {
 
   public addChild(child: Object3d) {
     child.updateParent(this);
+    if (this.scene) {
+      this.scene.connectScene(child);
+    }
     this.children.push(child);
   }
 
