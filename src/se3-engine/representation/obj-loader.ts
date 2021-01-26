@@ -62,7 +62,8 @@ export const loadObj = (objFileContents: string) => {
   objFileContents
     .split("\n")
     .filter((line) => !line.startsWith("#"))
-    .forEach((line) => parsePart(line.split(" "), state));
+    .map((line) => line.trim().split(" "))
+    .forEach((line) => parsePart(line, state));
 
   return {
     positions: new Float32Array(state.positionsArray),
@@ -70,6 +71,7 @@ export const loadObj = (objFileContents: string) => {
       state.normalsArray.length > 0
         ? new Float32Array(state.normalsArray)
         : createNormals(state.positionsArray),
-    uvs: state.uvsArray.length > 0 ? new Float32Array(state.uvsArray) : undefined,
+    uvs:
+      state.uvsArray.length > 0 ? new Float32Array(state.uvsArray) : undefined,
   };
 };
